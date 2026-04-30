@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rehab · Martin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,600;1,9..144,200&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0c0b;
+  --s1: #131513;
+  --s2: #1a1d1a;
+  --s3: #212421;
+  --border: #272a27;
+  --border2: #323632;
+  --text: #e4ebe4;
+  --muted: #6b786b;
+  --muted2: #4a554a;
+  --green: #5db87a;
+  --green2: #3d8a56;
+  --yellow: #d4a843;
+  --red: #c25f5f;
+  --blue: #5b8fc4;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;overflow-x:hidden;}
+
+/* SETUP SCREEN */
+#setup{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;}
+.setup-box{max-width:400px;width:100%;}
+.setup-logo{font-family:'Fraunces',serif;font-size:36px;font-weight:200;color:var(--text);margin-bottom:4px;}
+.setup-logo em{color:var(--green);font-style:italic;}
+.setup-sub{color:var(--muted);font-size:12px;margin-bottom:40px;line-height:1.7;}
+.setup-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.setup-input{width:100%;background:var(--s2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;padding:14px 16px;outline:none;transition:border .2s;}
+.setup-input:focus{border-color:var(--green);}
+.setup-btn{margin-top:20px;width:100%;background:var(--green);border:none;border-radius:8px;color:#0b0c0b;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;letter-spacing:.05em;padding:16px;cursor:pointer;transition:background .2s;}
+.setup-btn:hover{background:var(--green2);color:var(--text);}
+.setup-note{margin-top:16px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6;}
+
+/* MAIN APP */
+#app{display:none;min-height:100vh;}
+
+/* TOP BAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(11,12,11,.92);backdrop-filter:blur(8px);z-index:10;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.logo-sm{font-family:'Fraunces',serif;font-size:18px;font-weight:200;color:var(--text);}
+.logo-sm em{color:var(--green);font-style:italic;}
+.day-badge{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.nav-arrow{background:var(--s2);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:16px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;user-select:none;}
+.nav-arrow:hover{border-color:var(--border2);color:var(--text);}
+.nav-arrow:active{transform:scale(.93);}
+.nav-arrow.disabled{opacity:.3;pointer-events:none;}
+.progress-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer;transition:all .15s;}
+.progress-btn:hover{border-color:var(--border2);color:var(--text);}
+
+/* DAY HEADER */
+.day-header{padding:24px 20px 16px;}
+.dh-phase{font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;}
+.dh-title{font-family:'Fraunces',serif;font-size:26px;font-weight:200;line-height:1.15;margin-bottom:8px;}
+.dh-meta{font-size:11px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;}
+.dh-meta span{display:flex;align-items:center;gap:5px;}
+.dh-meta span::before{content:'·';}
+.dh-meta span:first-child::before{content:'';}
+
+/* STATUS BAR */
+.status-bar{margin:0 20px 20px;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.sb-info{font-size:12px;color:var(--muted);}
+.sb-info strong{color:var(--text);}
+.btn-start{background:var(--green);border:none;border-radius:8px;color:#0b0c0b;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.05em;padding:10px 20px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-start:hover{background:var(--green2);color:var(--text);}
+.btn-done{background:var(--s3);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.05em;padding:10px 20px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-done:hover{background:var(--green);color:#0b0c0b;}
+.completed-tag{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--green);}
+.completed-tag::before{content:'✓';font-size:16px;}
+
+/* EXERCISES */
+.ex-list{padding:0 20px 120px;}
+.ex-card{background:var(--s1);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color .2s;}
+.ex-card.open{border-color:var(--border2);}
+.ex-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background .15s;}
+.ex-head:hover{background:var(--s2);}
+.ex-n{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;background:var(--s3);color:var(--muted);}
+.phase-color-1 .ex-n{background:rgba(91,143,196,.12);color:var(--blue);}
+.phase-color-2 .ex-n{background:rgba(93,184,122,.12);color:var(--green);}
+.phase-color-3 .ex-n{background:rgba(212,168,67,.12);color:var(--yellow);}
+.ex-info{flex:1;min-width:0;}
+.ex-name{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ex-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.ex-chev{color:var(--muted2);font-size:11px;transition:transform .2s;flex-shrink:0;}
+.ex-card.open .ex-chev{transform:rotate(90deg);}
+.ex-body{display:none;padding:0 16px 16px 54px;border-top:1px solid var(--border);}
+.ex-card.open .ex-body{display:block;}
+.ex-sect{margin-top:14px;}
+.ex-sect-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.ex-sect-text{font-size:12px;color:var(--text);line-height:1.75;}
+.feel-box{margin-top:12px;background:var(--s2);border-left:2px solid var(--green);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12px;color:var(--text);line-height:1.65;}
+.warn-box{margin-top:10px;background:rgba(194,95,95,.07);border-left:2px solid var(--red);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12px;color:#e09090;line-height:1.65;}
+
+/* SECTION DIVIDER */
+.sec-div{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);padding:20px 0 10px;}
+.sec-div:first-child{padding-top:0;}
+
+/* PROGRESS OVERLAY */
+#overlay{position:fixed;inset:0;background:rgba(11,12,11,.85);backdrop-filter:blur(6px);z-index:50;display:none;align-items:flex-end;justify-content:center;padding:20px;}
+#overlay.show{display:flex;}
+.overlay-box{background:var(--s1);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;padding:24px;}
+.ov-title{font-family:'Fraunces',serif;font-size:22px;font-weight:200;margin-bottom:4px;}
+.ov-sub{font-size:11px;color:var(--muted);margin-bottom:24px;}
+.ov-close{float:right;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:12px;padding:4px 10px;cursor:pointer;}
+.ov-week{margin-bottom:20px;}
+.ov-week-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.ov-days{display:flex;flex-wrap:wrap;gap:8px;}
+.ov-day{width:40px;height:40px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);position:relative;cursor:pointer;transition:all .15s;}
+.ov-day.done{background:rgba(93,184,122,.15);border-color:var(--green);color:var(--green);}
+.ov-day.done::after{content:'✓';position:absolute;top:-6px;right:-6px;font-size:9px;background:var(--green);color:#0b0c0b;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:14px;text-align:center;}
+.ov-day.today{border-color:var(--yellow);color:var(--yellow);}
+.ov-day.future{opacity:.35;}
+.ov-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);}
+.ov-stat{background:var(--s2);border-radius:8px;padding:14px;text-align:center;}
+.ov-stat-val{font-family:'Fraunces',serif;font-size:24px;font-weight:200;color:var(--text);}
+.ov-stat-label{font-size:10px;color:var(--muted);margin-top:3px;}
+.ov-reset{margin-top:20px;text-align:center;}
+.ov-reset-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted2);font-family:'DM Mono',monospace;font-size:11px;padding:8px 16px;cursor:pointer;}
+
+/* TIMER */
+.timer-row{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.timer-display{font-family:'Fraunces',serif;font-size:20px;font-weight:200;color:var(--yellow);min-width:60px;}
+.timer-label{font-size:11px;color:var(--muted);}
+
+/* PHASE DOT */
+.ph1{color:var(--blue);}
+.ph2{color:var(--green);}
+.ph3{color:var(--yellow);}
+
+@media(max-width:480px){
+  .dh-title{font-size:22px;}
+  .topbar{padding:12px 16px;}
+  .day-header{padding:20px 16px 14px;}
+  .ex-list{padding:0 16px 100px;}
+  .status-bar{margin:0 16px 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- SETUP -->
+<div id="setup">
+  <div class="setup-box">
+    <div class="setup-logo">Rehab <em>plan</em></div>
+    <div class="setup-sub">Zadaj dátum kedy začínaš (alebo si začal).<br>Appka si ho zapamätá a vždy otvorí dnešný deň.</div>
+    <div class="setup-label">Štartovací dátum</div>
+    <input type="date" class="setup-input" id="startDate">
+    <button class="setup-btn" onclick="saveStart()">Začať plán</button>
+    <div class="setup-note">Dáta sa ukladajú len v tomto prehliadači.<br>Funguje offline.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo-sm">Rehab <em>plan</em></div>
+      <div class="day-badge" id="topBadge">—</div>
+    </div>
+    <div class="topbar-right">
+      <button class="progress-btn" onclick="showOverlay()">História</button>
+      <div class="nav-arrow" id="btnPrev" onclick="goDay(-1)">←</div>
+      <div class="nav-arrow" id="btnNext" onclick="goDay(1)">→</div>
+    </div>
+  </div>
+
+  <div class="day-header">
+    <div class="dh-phase" id="dhPhase"></div>
+    <div class="dh-title" id="dhTitle"></div>
+    <div class="dh-meta" id="dhMeta"></div>
+  </div>
+
+  <div class="status-bar" id="statusBar">
+    <div class="sb-info" id="sbInfo">Pripravený na tréning</div>
+    <button class="btn-start" id="btnAction" onclick="handleAction()">Štart</button>
+  </div>
+
+  <div class="ex-list" id="exList"></div>
+
+  <div style="display:flex;justify-content:center;align-items:center;gap:16px;padding:0 20px 40px;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(transparent,var(--bg) 40%);pointer-events:none;">
+    <div style="pointer-events:all;display:flex;gap:10px;">
+      <button class="nav-arrow" style="width:44px;height:44px;font-size:18px;" id="btnPrev2" onclick="goDay(-1)">←</button>
+      <button class="nav-arrow" style="width:44px;height:44px;font-size:18px;" id="btnNext2" onclick="goDay(1)">→</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY OVERLAY -->
+<div id="overlay" onclick="overlayClick(event)">
+  <div class="overlay-box" id="overlayBox">
+    <button class="ov-close" onclick="hideOverlay()">zavrieť</button>
+    <div class="ov-title">História</div>
+    <div class="ov-sub">Tvoje odtréningované dni</div>
+    <div id="overlayContent"></div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const PLAN = [
+  // FÁZA 1 — Týždeň 1
+  {phase:1,week:1,dow:1,label:'Pondelok',title:'Bedrá + Dýchanie',duration:'~20 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up (povinný štart každého tréningu)',exs:[
+      {n:1,name:'Bránicové dýchanie',meta:'3 min · ležmo na chrbte',
+       desc:'Ľahni si na chrbát, kolená pokrčené, chodidlá na podložke. Ruky polož na brucho. Nádych nosom — brucho ide hore (nie hrudník). Výdych ústami — brucho klesá, jemne stiahni spodné brucho na konci výdychu. Rytmus: nádych 4s, výdych 6s.',
+       feel:'Teplo v bruchu. Uvoľnenie v slabinách a páse. Ak cítiš napätie v krku alebo ramenách — sú príliš zapojené, uvoľni ich.',
+       why:'Bránica je súčasť hlbokého stabilizačného systému. Po operácii a útlme je dýchanie povrchné — toto je základ všetkého ostatného.'},
+      {n:2,name:'Half-kneeling iliopsoas stretch — ľavá strana',meta:'3 × 45s každá strana (L priorita)',
+       desc:'Kľakni si na ľavé koleno (ľavá noha vzadu), pravá noha vpred, chodidlo na podložke. Panva rovno — nesklápaj dopredu. Mierne podsaď panvu (posteriorný tilt), potom sa jemne predkloni váhou vpred. Cítiš ťah v prednej časti ľavého bedrá a stehna.',
+       feel:'Hlboký ťah predné bedro L. NIE bolesť v kolene ani slabinách. Ak cítiš nekomfort v operovanej oblasti — zmierni rozsah.',
+       warn:'Ak cítiš ťahanie v jazve po operácii — okamžite zmierni. Začni s minimálnym rozsahom.'},
+      {n:3,name:'Thoracic rotation — na boku',meta:'2 × 8 každá strana',
+       desc:'Ľahni na bok, kolená pokrčené v 90° pred sebou. Dolná ruka drží horné koleno pri podložke. Horná ruka ide za hlavu. Rotuj hornú časť tela dozadu — loket sleduje oblúk k stropu a za seba. Panva zostáva na mieste. Podržíš 1-2s na konci, späť.',
+       feel:'Otváranie prednej strany hrudníka. Rotácia sa deje v Th chrbtici, nie v drieku. Pravá strana bude tuhšia — venuj jej viac času.'},
+    ]},
+    {title:'Hlavná časť',exs:[
+      {n:4,name:'Cat-Cow — hrudná mobilita',meta:'2 × 10 opakovaní · pomalé',
+       desc:'Na štvornožke, zápästia pod ramenami, kolená pod bedrami. Cat: výdych — chrbát do oblúka nahor, hlava dole, lopatky od seba. Cow: nádych — chrbát do priehlbiny, hlava hore, lopatky k sebe. Pohyb plynulý. Sústreď sa na pohyb v hrudnej časti (nie len driek).',
+       feel:'Pohyb v hrudníku, nie len v drieku. Jemné praskanie v Th chrbtici je normálne.'},
+      {n:5,name:'Záverečné dýchanie + body scan',meta:'3 min · ležmo',
+       desc:'Ľahni si, ruky pozdĺž tela. Bránicové dýchanie. Postupne si prechádzaj telom — od chodidiel nahor. Kde cítiš napätie, skús ho uvoľniť pri výdychu. Toto je diagnostika — každý deň pocítiš niečo iné.',
+       feel:'Nervový systém sa musí naučiť opäť cítiť telo ako celok — nielen reagovať na bolesť.'},
+    ]}
+  ]},
+
+  {phase:1,week:1,dow:2,label:'Utorok',title:'Foam roller + Lopatka',duration:'~20 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'Bránicové dýchanie',meta:'3 min',desc:'Rovnaký postup ako v pondelok. Nádych 4s, výdych 6s, brucho hore/dolu.',feel:'Uvoľnenie pred foam rollerom — telo sa pripravuje.'},
+      {n:2,name:'Half-kneeling stretch + Thoracic rotation',meta:'2 min L + 2×8 rotácia',desc:'Skrátená verzia warm-upu: half-kneeling ľavá (2 min) a thoracic rotation na boku (8× každá strana). Od teraz toto robíš ako warm-up každý tréning.',feel:'Tento warm-up budeš robiť pred každým tréningom až do konca. Zapamätaj si poradie.'},
+    ]},
+    {title:'Foam roller',exs:[
+      {n:3,name:'Foam roller — hrudná chrbtica',meta:'3–4 min · pomalé prechody',
+       desc:'Roller priečne pod hrudnou chrbticou (nie driek!). Ruky za hlavu alebo na hrudi. Pomaly sa rolas od Th3 po Th10. Na tuhých miestach zastav 20–30s. Nádych — vydýchni a pustíš sa do rollera. Hlavu nedáš dozadu — ruky držia krk.',
+       feel:'Tlak a uvoľnenie vo fasciách. Praskanie je normálne. Bolesť nie — ak bolí, zmierni tlak váhou.'},
+      {n:4,name:'Foam roller — TFL ľavá strana',meta:'2 min ľavá, 1 min pravá',
+       desc:'Na boku, roller pod vonkajšou stranou stehna od bedra po koleno. Pomalý pohyb. Horná noha pred tebou pre odľahčenie. Ľavá strana — viac času.',
+       feel:'Intenzívny tlak, nie ostrá bolesť. TFL (sval pri bedrovej kosti) je pravdepodobne veľmi tuhý po operácii.'},
+    ]},
+    {title:'Lopatka + Rameno',exs:[
+      {n:5,name:'Wall angels — aktivácia lopatiek',meta:'3 × 8 opakovaní · pomalé',
+       desc:'Stoj chrbtom k stene, päty 5cm od steny, zátylie, lopatky a driek sa dotýkajú steny. Ruky hore v "W" pozícii — lakte a zápästia sa dotýkajú steny. Pomaly posúvaj ruky nahor do "Y" (kolko dáš bez odtrhnutia od steny), naspäť do "W". Driek NESMIE opustiť stenu.',
+       feel:'Práca dolných trapézov a serratus anterior. Ak nedáš ruky vysoko bez odtrhnutia — to je presne ten problém. Choď len na rozsah kde môžeš udržať kontakt.',
+       warn:'Pravé rameno bude mať obmedzenejší rozsah — neprinucuj. Len do bodu kde cítiš ťah, nie bolesť.'},
+      {n:6,name:'Sleeper stretch — zadná kapsula pravého ramena',meta:'3 × 45s pravá strana',
+       desc:'Ľahni na pravý bok. Pravá ruka pred tebou v 90°. Ľavá ruka jemne tlačí pravé zápästie smerom k podložke (vnútorná rotácia ramena). Cítiš ťah v zadnom pravom ramene. Netlač silou — len jemný konštantný tlak.',
+       feel:'Hlboký ťah v zadnej časti pravého ramena / zadný deltoid. Toto priamo adresuje tvoj problém s rotáciou. Počíta sa každý deň.'},
+    ]}
+  ]},
+
+  {phase:1,week:1,dow:3,label:'Streda',title:'Panva + Reťazec',duration:'~20 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'Bránicové dýchanie + Half-kneeling + Thoracic rotation',meta:'6 min · povinný warm-up',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8. Toto je tvoj štandardný warm-up — rovnaký každý deň.',feel:'Zapamätaj si tento sled. Od Fázy 2 ho budeš robiť každý tréning automaticky.'},
+    ]},
+    {title:'Hlavná časť',exs:[
+      {n:2,name:'Pelvic tilts — uvedomenie panvy',meta:'2 × 15 · ležmo',
+       desc:'Ležmo na chrbte, kolená pokrčené. Stlačíš driek k podložke (posteriorný tilt) — brucho sa mierne stiahne. Potom uvoľníš — malá medzera pod driekem (anteriorný tilt). Pohyb je malý a kontrolovaný. Dýchanie: výdych pri stlačení.',
+       feel:'Vedomú kontrolu panvy. Cieľ nie je pohybovať — cieľ je CÍTIŤ rozdiel medzi tilted a neutrálnou pozíciou. To je základ korekcie výchylky.'},
+      {n:3,name:'90-90 hip stretch',meta:'3 × 45s každá strana',
+       desc:'Sadni si na podložku. Predná noha v 90° (stehno pred sebou, lýtko do strany). Zadná noha v 90° (stehno do strany, lýtko za sebou). Chrbát rovno. Mierne sa predkloň nad prednú nohu — cítiš ťah v bedre prednej nohy.',
+       feel:'Hlboký ťah v zadku (nie koleno!). Ak bolí koleno — skontroluj uhol nôh. Ľavá strana bude tuhšia.'},
+      {n:4,name:'Half-kneeling thoracic rotation',meta:'2 × 8 každá strana',
+       desc:'Kľakni si na ľavé koleno. Ruky za hlavu. Rotuj trup doprava — loket smeruje dozadu. Driek sa nehýbe, pohyb je len v hrudníku. Vymeň nohu a rotuj doľava.',
+       feel:'Táto poloha fixuje panvu a núti rotáciu ísť presne do hrudníka. Lepší ako rotácia v stoji.'},
+      {n:5,name:'Child\'s pose s rotáciou',meta:'2 × 30s každá strana',
+       desc:'Začni v child\'s pose (sed na pätách, ruky pred sebou). Pravú ruku daj pod telo, ľavou siahaš čo najďalej doľava — hrudník sa otvára nahor. Podržíš. Vymeň.',
+       feel:'Kombinuje mobilitu hrudníka + uvoľnenie drieku + rotáciu. Jednoduchý ale efektívny pohyb.'},
+    ]}
+  ]},
+
+  {phase:1,week:1,dow:4,label:'Štvrtok',title:'Opakovanie + Dlhšie výdrže',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:'Rovnaký warm-up každý deň.'},
+    ]},
+    {title:'Hlavná časť — s pokrokom',exs:[
+      {n:2,name:'Bránicové dýchanie — predĺžená verzia s aktiváciou',meta:'8 min · ležmo',
+       desc:'Ako zvyčajne, ale predĺžená. Po 4 minútach pridaj: pri každom výdychu jemne stlač spodné brucho (ako keby si chcel pritiahnúť pupok k chrbtici). Nie brutálne — 20% sily. Drž to počas celého výdychu, pri nádychu uvoľni.',
+       feel:'Toto je zárodok aktivácie transversus abdominis — najhlbší sval brucha, základ stability chrbtice.'},
+      {n:3,name:'Half-kneeling stretch + aktívne stiahnutie',meta:'3 × 45s ľavá strana',
+       desc:'Ako zvyčajne, ale pridaj: v pozícii stretchu jemne stlač koleno zadnej nohy do podložky (izometricky — koleno sa nehýbe). Drž 5s, uvoľni, prejdi hlbšie.',
+       feel:'Recipročná inhibícia — keď aktivuješ gluteus, iliopsoas sa musí uvoľniť. Inteligentnejší stretch.'},
+      {n:4,name:'Sleeper stretch + Wall angels',meta:'Sleeper 3×45s + Wall angels 3×8',
+       desc:'Sleeper stretch — sleduj či sa rozsah mení. Wall angels — si schopný dostať ruky vyššie ako v utorok?',
+       feel:'Do konca týždňa 2 by si mal cítiť prvé zmeny v rotácii ramena. Sleeper stretch funguje rýchlo keď je pravidelný.'},
+    ]}
+  ]},
+
+  {phase:1,week:1,dow:5,label:'Piatok',title:'Celý reťazec — sekvencia',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:'Konzistencia.'},
+    ]},
+    {title:'Plynulá sekvencia',exs:[
+      {n:2,name:'Foam roller hrudník + dýchanie',meta:'4 min',
+       desc:'Roller pod Th chrbticou. Na každom tuhom mieste: 3 hlboké bránicové nádychy. Pri výdychu sa pustíš do rollera. Toto je tvoj "reset" po týždni práce za stolom.',
+       feel:'Kombinácia uvoľnenia mäkkých tkanív s dýchaním.'},
+      {n:3,name:'Sekvencia bez prestávok: Half-kneeling → 90-90 → Thoracic rotation',meta:'10 min plynulo',
+       desc:'Half-kneeling ľavá (45s) → pravá (30s) → 90-90 ľavá (45s) → pravá (30s) → thoracic rotation ľav na bok 8× → prav na bok 8×. Plynulý flow, nie prerušovaný.',
+       feel:'Cieľ: pocítiť telo ako celok, nie ako oddelené časti. Toto je príprava na fázu 2 kde pohyby budú aktívnejšie.'},
+      {n:4,name:'Sleeper stretch + záverečné dýchanie',meta:'3×45s + 3 min',
+       desc:'Sleeper stretch ako zvyčajne. Potom záverečné bránicové dýchanie — body scan. Porovnaj ako sa cítiš oproti pondelku.',
+       feel:'Koniec týždňa 1 — si položil základ.'},
+    ]}
+  ]},
+
+  // FÁZA 1 — Týždeň 2
+  {phase:1,week:2,dow:1,label:'Pondelok',title:'T1 sekvencia + Dead bug intro',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:'Každý deň rovnaký štart.'},
+    ]},
+    {title:'Hlavná časť',exs:[
+      {n:2,name:'Celá sekvencia Fázy 1 (skrátená)',meta:'Bedrá + foam roller + lopatka · 15 min',
+       desc:'Bránicové dýchanie (3 min) → Half-kneeling L priorita → Thoracic rotation na boku → Sleeper stretch. Mal by si byť rýchlejší a pohyby plynulejšie. Ak nie — vráť sa k základom.',
+       feel:'Konzistencia. Telo sa mení pomaly ale istotne.'},
+      {n:3,name:'Dead bug — INTRO verzia',meta:'3 × 5 každá strana · veľmi pomalé',
+       desc:'Ľahni na chrbát. Ruky hore (k stropu), kolená v 90° nad bedrami. Výdych — jemne stlač driek k podložke. Pomaly spúšťaj JEDNU nohu k podložke (päta sa takmer dotkne), ostatné časti zostávajú. Nádych — noha späť. Driek NESMIE opustiť podložku. Začni len s nohami, bez rúk.',
+       feel:'Práca hlbokého brucha. Ak driek odchádza od podložky — to je príliš ťažké, skráť rozsah pohybu nohy.',
+       warn:'Toto je prvý aktívny pohyb na core. Ak cítiš tlak alebo nekomfort v operovanej oblasti — nezačínaj s tým ešte. Pokračuj v stretching sekvencii ešte týždeň.'},
+    ]}
+  ]},
+
+  {phase:1,week:2,dow:2,label:'Utorok',title:'Foam roller kompletný + Wall angels progres',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:''},
+    ]},
+    {title:'Foam roller + Lopatka progres',exs:[
+      {n:2,name:'Foam roller kompletný — hrudník + TFL + gluteus',meta:'6–8 min',
+       desc:'Hrudník (3 min) → TFL ľavá (2 min) → gluteus ľavý: sadni si na roller, jedna noha cez druhú (figure-4), rolas po ľavom zadku (2 min). Toto je nová časť — gluteus medius a piriformis, priamo súvisiace s výchylkou panvy.',
+       feel:'Ľavý gluteus bude pravdepodobne veľmi citlivý. To je signál — práve tam treba pracovať.'},
+      {n:3,name:'Wall angels — progres do Y s výdržou',meta:'3 × 10 · výdrž 3s v Y',
+       desc:'Ako minulý týždeň, ale v Y pozícii (ruky hore) drž 3 sekundy pred návratom. Sústreď sa na stiahnutie dolných trapézov — lopatky dole a k sebe — nie len hore.',
+       feel:'Výdrž v Y polohe aktivuje dolné trapézy a serratus. Presne to, čo chýba keď je lopatka v zlej pozícii.'},
+      {n:4,name:'Sleeper stretch + cross-body stretch',meta:'3 × 45s každý',
+       desc:'Sleeper stretch ako zvyčajne. Potom cross-body: pravú ruku daj pred hrudník, ľavou rukou jemne pritiahnuť k hrudi na úrovni ramena. Zadný deltoid a vonkajšia kapsula ramena.',
+       feel:'Kombinácia sleeper + cross-body = kompletné uvoľnenie zadnej kapsuly pravého ramena.'},
+    ]}
+  ]},
+
+  {phase:1,week:2,dow:3,label:'Streda',title:'Panva + Dead bug progres',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:''},
+    ]},
+    {title:'Panva a core',exs:[
+      {n:2,name:'Pelvic tilts + Bridge INTRO',meta:'Pelvic tilts 2×15 → Bridge 3×8',
+       desc:'Pelvic tilts ako zvyčajne. Potom bridge: z tej istej polohy (ľahni chrbát, kolená pokrčené), výdych a pomaly zdvíhaj panvu hore — vertebra po vertebre od kostrče. Hore drž 2s, dolu vertebra po vertebre. Cítiš symetriu medzi L a P zadkom?',
+       feel:'Bridge je prvý pohyb kde aktívne zapájaš gluteus. Sleduj asymetriu — ľavý gluteus môže byť slabší alebo menej koordinovaný po operácii.'},
+      {n:3,name:'Dead bug — nohy + ruky (plná verzia)',meta:'3 × 5 každá strana',
+       desc:'Ak pondelkový dead bug išiel dobre (driek neodchádzal): pridaj ruku. Pri spúšťaní pravej nohy, súčasne spúšťaš ľavú ruku nad hlavu. Kontralaterálny vzor. Driek stále pri podložke. Pomalý výdych celý čas pohybu.',
+       feel:'Toto je základ pohybového vzoru — kontralaterálna koordinácia. Práve tento vzor sa stráca pri asymetriách panvy.'},
+      {n:4,name:'90-90 + Half-kneeling sekvencia',meta:'8 min plynulo',
+       desc:'Zopakuj stretching sekvenciu z týždňa 1. Mal by si ísť hlbšie a s väčším uvoľnením.',
+       feel:'Koniec týždňa 2 = ready na fázu 2. Ak stále cítiš silný nekomfort v operovanej oblasti — predĺž fázu 1 o týždeň.'},
+    ]}
+  ]},
+
+  {phase:1,week:2,dow:4,label:'Štvrtok',title:'Kompletná F1 sekvencia',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Plná sekvencia',exs:[
+      {n:1,name:'Celá Fáza 1 ako jeden flow',meta:'25 min kontinuálne',
+       desc:'Bránicové dýchanie (3 min) → Foam roller hrudník (3 min) → Half-kneeling L+P (3 min) → 90-90 L+P (3 min) → Thoracic rotation (3 min) → Wall angels (5×) → Sleeper stretch (3×45s) → Dead bug intro (3×5) → Záverečné dýchanie (3 min). Plynulo, bez spěchu.',
+       feel:'Toto je tvoj "maintenance" protokol — aj keď sa dostaneš do fázy 3, toto budeš robiť 2× týždenne ako základ.'},
+    ]}
+  ]},
+
+  {phase:1,week:2,dow:5,label:'Piatok',title:'Hodnotenie — prechod na Fázu 2',duration:'~20 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
+   sections:[
+    {title:'Warm-up + Testy',exs:[
+      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:''},
+      {n:2,name:'Ľahká F1 sekvencia',meta:'10 min',desc:'Skrátená verzia: half-kneeling → sleeper stretch → thoracic rotation. Bez foam rollera.',feel:'Aktívny odpočinok pred testmi.'},
+      {n:3,name:'Sebahodnotenie — 4 testy',meta:'10 min',
+       desc:'1. Vystri pravú ruku pred seba — vieš ju teraz pritiahnutiť k hrudi lepšie ako pred 2 týždňami?\n2. Half-kneeling ľavá — ide rozsah hlbšie bez bolesti slabín?\n3. Bridge — cítiš symetrickú prácu oboch zadkov?\n4. Dead bug — driek drží pri podložke?',
+       feel:'Ak 3 zo 4 áno → si ready na fázu 2. Ak 2 alebo menej → predĺž fázu 1 o týždeň. Nie je to zlyhanie — je to inteligentný postup.'},
+    ]}
+  ]},
+
+  // FÁZA 2 — Týždeň 3
+  {phase:2,week:3,dow:1,label:'Pondelok',title:'Gluteus L + Core aktivácia',duration:'~30 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up (F1 sekvencia — povinná)',exs:[
+      {n:1,name:'F1 warm-up',meta:'8 min · každý tréning F2 takto začína',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1.5 min → Thoracic rotation 2×8 → Sleeper stretch 1×45s.',feel:'Nervový systém musí "rozbehnúť" správne vzory pred záťažou. Nikdy nevynechaj.'},
+    ]},
+    {title:'Hlavná časť — aktivácia',exs:[
+      {n:2,name:'Clamshell s gumou — ľavá strana',meta:'3 × 15 ľavá, 3 × 10 pravá · ľahká guma',
+       desc:'Odporová guma nad kolenami (ľahká). Ľahni na ľavý bok, kolená pokrčené v 60°, panva rovno (nesklápaj dopredu). Horné koleno dvíhaj hore ako mušľa — päty zostávajú spolu. Navrch 1s výdrž, späť pomaly. Nepohybuj panvou — pohyb je len v bedrovom kĺbe.',
+       feel:'Pálenie v bočnom zadku (gluteus medius). Nie v stehne. Ak cítiš stehno — skontroluj uhol nohy. Ľavá strana — 15 opakovaní, aj keď ťažšie. Toto je tvoj najdôležitejší pohyb.'},
+      {n:3,name:'Single-leg glute bridge — ľavá noha',meta:'3 × 8 ľavá, 3 × 8 pravá',
+       desc:'Ležmo na chrbte, ľavá noha pokrčená (opora), pravá vystretá. Výdych — zdvíhaj panvu len silou ľavého zadku. Hore výdrž 2s, dolu pomaly. Ak sa panva šikmo naklání — skráť rozsah, nie počet.',
+       feel:'Asymetria ktorú pocítiš tu = priama vizualizácia toho, prečo je panva vychýlená. Každé opakovanie je korekcia.'},
+      {n:4,name:'Dead bug — s tlakom ruky do stropu',meta:'3 × 8 každá strana',
+       desc:'Plná verzia dead bug (noha + kontralaterálna ruka). Pridaj: pri spúšťaní nohy aktívne tlač opačnou rukou do stropu (ako keby si tlačil strop). Driek stále pri podložke. Pomalý výdych celý čas pohybu.',
+       feel:'Tlak ruky do stropu je kľúč. Core sa automaticky stiahne silnejšie. Skús to — pocítiš rozdiel okamžite.'},
+    ]}
+  ]},
+
+  {phase:2,week:3,dow:2,label:'Utorok',title:'Lopatka + Rameno aktivácia',duration:'~30 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Štandardný F1 warm-up. Pred lopatkovými pohybmi vždy Sleeper stretch — zadná kapsula musí byť uvoľnená pred aktiváciou.',feel:'Poradie je dôležité. Uvoľni → potom aktivuj. Nie naopak.'},
+    ]},
+    {title:'Lopatková stabilita + Rameno',exs:[
+      {n:2,name:'Band pull-apart',meta:'3 × 15 · ľahká guma',
+       desc:'Stoj, guma pred sebou na úrovni ramien. Pomaly roztiahni gumy do strán — lopatky k sebe a dole. Ruky na šírku tela v cieľovej pozícii. Späť pomaly 3s. Lakte mierne pokrčené.',
+       feel:'Práca medzi lopatkami (rhomboids) a dolné trapézy. Ak cítiš len zadné rameno — lakte sú príliš vystreté. Pokrč ich viac.'},
+      {n:3,name:'Face pull s gumou',meta:'3 × 12',
+       desc:'Guma zachytená vo výške očí (za dvere, na tyč). Ruky na gume dlaňami nadol. Ťahaj k tvári — lakte idú do strán a za hlavu, ruky sa natočia dlaňami dopredu v cieľovej pozícii (vonkajšia rotácia). V krajnej pozícii lopatky stiahnuté a dole. Späť pomaly.',
+       feel:'Toto je najdôležitejší pohyb pre pravé rameno. Kombinuje vonkajšiu rotáciu + lopatkovú stabilitu + aktiváciu dolných trapézov.'},
+      {n:4,name:'Prone Y-T-W',meta:'2 × 10 každý tvar · ľahni na brucho',
+       desc:'Ľahni na brucho. Y: zdvihni ruky do Y tvaru (nad hlavu) — lopatky stiahnuté. T: zdvihni do T (do strán). W: lakte 90°, zdvíhaj lakte hore. Každá pozícia — zdvihni 2s, pomaly dole. Bez závaží — len váha rúk.',
+       feel:'Pocítiš to medzi lopatkami a v dolných trapézoch. Ak cítiš krk — príliš zapájaš horné trapézy. Uvoľni ramená dole pred každým zdvihom.'},
+    ]}
+  ]},
+
+  {phase:2,week:3,dow:3,label:'Streda',title:'Panva + Integrácia',duration:'~30 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'F1 warm-up',meta:'8 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1.5 min → Thoracic rotation 2×8 → Sleeper stretch 1×45s.',feel:''},
+    ]},
+    {title:'Panva + reťazec',exs:[
+      {n:2,name:'Hip abduction s gumou — vstoje',meta:'3 × 12 každá strana · guma nad kolenami',
+       desc:'Stoj pri stene (opri sa rukou). Guma nad kolenami. Pomaly dvíhaj vonkajšiu nohu do strany — 45°, nie viac. Vnútorná noha zostáva rovno. Späť pomaly 3s. Ľavá strana: 12 opakovaní prioritne. Trup zostáva rovno.',
+       feel:'Bočné zdvíhanie nohy aktivuje gluteus medius — priamo zodpovedný za vyrovnanie panvy.'},
+      {n:3,name:'Bird-dog — kontralaterálna stabilita',meta:'3 × 8 každá strana',
+       desc:'Štvornožka, chrbát neutrálny. Výdych — pomaly vystri ľavú nohu dozadu A pravú ruku dopredu súčasne. Hore výdrž 3s. Späť bez dotyku kolena/ruky so zemou. Striedaj strany. Panva sa NESMIE nakláňať do strán.',
+       feel:'Kontralaterálny pohyb = reťazec cez chrbát. Ak sa nakláňaš doprava pri vystrieraní ľavej nohy — ľavý gluteus a pravý latissimus sú slabé. Presne tvoj problém.'},
+      {n:4,name:'Pallof press s gumou — anti-rotácia',meta:'3 × 8 každá strana',
+       desc:'Guma zachytená do boku vo výške pupka (za dvere). Stoj bokom ku gume, ruky pri hrudi. Pomaly vystri ruky pred seba — telo sa NEBUDE otáčať. Drž 2s, späť. Toto NIE JE silové — je to anti-rotačná stabilita trupu.',
+       feel:'Priamo tréninguje odolnosť voči rotácii hrudníka. Keď ho zvládneš dobre, výchylka panvy sa začne korigovať zrýchlene.'},
+    ]}
+  ]},
+
+  {phase:2,week:3,dow:4,label:'Štvrtok',title:'Gluteus + Rameno — kombinácia',duration:'~30 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[
+      {n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný warm-up.',feel:''},
+    ]},
+    {title:'Syntézový deň',exs:[
+      {n:2,name:'Clamshell L · Single-leg bridge L · Band pull-apart · Face pull',meta:'Kombinácia Po+Ut · 25 min',
+       desc:'F1 warm-up → Clamshell L 3×15 → Single-leg bridge L 3×8 → Band pull-apart 3×15 → Face pull 3×12. Sleduj: je ľavý gluteus slabší ako v pondelok, rovnaký, alebo lepší?',
+       feel:'Štvrtok je "syntézový" deň — spájaš to čo si robil oddelene. Telo začína chápať prepojenie.'},
+    ]}
+  ]},
+
+  {phase:2,week:3,dow:5,label:'Piatok',title:'F1 sekvencia + test rotácie',duration:'~25 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Aktívny odpočinok + hodnotenie',exs:[
+      {n:1,name:'Kompletná F1 sekvencia',meta:'20 min',desc:'Celá sekvencia Fázy 1 — bránicové dýchanie, foam roller, half-kneeling, 90-90, thoracic rotation, wall angels, sleeper stretch.',feel:'Záver týždňa = investícia do mobility po 4 aktívnych dňoch.'},
+      {n:2,name:'Test rotácie pravého ramena',meta:'5 min',desc:'Vystri pravú ruku pred seba — dokážeš ju pritiahnutiť k hrudi? Porovnaj s týždňom 1. Otočí sa pravá ruka dlaňou nahor keď ju dvíhaš nad hlavu?',feel:'Po 3 týždňoch by si mal vidieť prvé reálne zmeny v rotácii ramena.'},
+    ]}
+  ]},
+
+  // FÁZA 2 — Týždeň 4
+  {phase:2,week:4,dow:1,label:'Pondelok',title:'Progres intenzity — gluteus',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný F1 warm-up.',feel:''}]},
+    {title:'Progresívna záťaž',exs:[
+      {n:2,name:'Clamshell — stredná guma',meta:'3 × 20 ľavá / 3 × 15 pravá',desc:'Stredná guma ak ľahká bola zvládnuteľná v T3. Rovnaký pohyb, vyšší odpor. Sleduj či sa forma nezhoršuje na konci setu.',feel:'Progres = väčší odpor pri rovnakej forme. Nie viac opakovaní pri zlej forme.'},
+      {n:3,name:'Lateral band walk',meta:'3 × 12 krokov každá strana · guma nad kolenami',desc:'Guma nad kolenami. Mierne drep (1/4 drepu). Kroky do strany — nohy stále na šírku ramien minimálne (guma napnutá). 12 krokov doprava, 12 doľava = 1 set. Trup rovno, kolená nad prstami.',feel:'Gluteus medius v pohybe — funkčnejší ako clamshell. Telo sa učí používať ľavý gluteus pri pohybe v priestore.'},
+      {n:4,name:'Step-up na stoličku — ľavá noha',meta:'3 × 8 ľavá, 3 × 8 pravá',desc:'Stoj pred stoličkou (15–25cm). Ľavá noha na stoličku. Tlač cez ľavú pätu — vstoj na stoličku silou ľavého zadku. Pravá noha voľne vedľa. Dole pomaly. Trup rovno — nekloň dopredu.',feel:'Prvý pohyb v plnom rozsahu kde ľavý gluteus drží celú váhu tela. Priama korekcia funkčnej slabosti.'},
+      {n:5,name:'Dead bug s gumou',meta:'3 × 8 každá strana',desc:'Dead bug + guma zachytená za dolné nohy nábytku. Oboma rukami drží gumy v napätí pri spúšťaní nôh. Ak je príliš ťažké — vráť sa k verzii bez gumy.',feel:'Trénuješ core v ťahu — podobné ako pri kalistenike. Príprava na fázu 3.'},
+    ]}
+  ]},
+
+  {phase:2,week:4,dow:2,label:'Utorok',title:'Rameno progres',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Štandardný F1 warm-up + sleeper stretch pred lopatkovými pohybmi.',feel:'Sleeper stretch každý deň kým nemáš plnú rotáciu.'}]},
+    {title:'Rameno — progres',exs:[
+      {n:2,name:'External rotation s gumou',meta:'3 × 15 pravá, 3 × 12 ľavá · ľahká guma',desc:'Guma zachytená do boku. Stoj bokom, lakeť pri tele v 90°. Vonkajšia rotácia — ruka od tela. Lakeť zostáva pri tele. Späť pomaly. Pravá strana priorita.',feel:'Vonkajšia rotácia je presne to, čo ti chýba. Cítiš prácu v zadnom ramene (nie v bicepse/predlaktí).'},
+      {n:3,name:'Face pull s predĺženou rotáciou',meta:'3 × 12',desc:'Face pull ako v T3, ale v krajnej pozícii pridaj 2s aktívneho tlaku rúk dozadu (ešte viac vonkajšej rotácie). Lopatky dole a k sebe.',feel:'Kombinácia vonkajšej rotácie + retrakcie lopatky + depresia = presne opačný pohyb ako tvoj problém.'},
+      {n:4,name:'Prone Y-T-W s ľahkým závaží (0.5–1kg)',meta:'2 × 10 každý tvar',desc:'Ako v T3 ale s malým závaží (fľaša vody, konzerva). Ak forma klesá, choď späť bez závaží.',feel:'Dolné trapézy a lopatky musia pracovať proti odporu.'},
+    ]}
+  ]},
+
+  {phase:2,week:4,dow:3,label:'Streda',title:'Integrácia celého reťazca',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný.',feel:''}]},
+    {title:'Integrácia',exs:[
+      {n:2,name:'Pallof press s pohybom',meta:'3 × 8 každá strana',desc:'Ako v T3, ale v vystretej pozícii pridaj pomalé zdvíhanie rúk hore (do Y) a dole. Trup stále nesmie rotovať.',feel:'Kombinuje anti-rotáciu s pohybom ramena. Toto je blízko reálnemu pohybu.'},
+      {n:3,name:'Step-up + band pull-apart superset',meta:'3 × (8 ľavá + 15 pull-apart)',desc:'Step-up ľavou 8 opakovaní → bez pauzy: band pull-apart 15 opakovaní → 45s pauza. Potom pravá noha 8 + pull-apart 15.',feel:'Telo sa učí byť stabilné naraz hore aj dole. Príprava na kalisteniku.'},
+      {n:4,name:'Bird-dog s predĺženou výdržou',meta:'3 × 8 každá strana · výdrž 5s',desc:'Bird-dog z T3 s predĺženou výdržou 5s. Môžeš pridať malé závaží na nohu (0.5kg). Ak sa nakláňaš — späť k verzii bez závaží.',feel:'5s výdrž = izometrická práca kontralaterálneho reťazca. To je presne čo chrbtica potrebuje.'},
+    ]}
+  ]},
+
+  {phase:2,week:4,dow:4,label:'Štvrtok',title:'Circuit — plná kombinácia',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný.',feel:''}]},
+    {title:'Circuit tréning — 3 kruhy',exs:[
+      {n:2,name:'Circuit: Lateral walk + Face pull + Bird-dog + Dead bug',meta:'3 kruhy · 30–45s pauza medzi kruhmi',desc:'Lateral band walk 12+12 → Face pull 12 → Bird-dog 8+8 → Dead bug 8+8. Minimálna pauza (30s) medzi kruhmi. 3 kruhy. Toto je prvý circuit tréning.',feel:'Circuit je efektívny a mentálne zaujímavý. Ak si unavený — predĺž pauzy. Forma vždy nad tempom.'},
+    ]}
+  ]},
+
+  {phase:2,week:4,dow:5,label:'Piatok',title:'F1 sekvencia + testy na F3',duration:'~30 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Aktívny odpočinok + hodnotenie',exs:[
+      {n:1,name:'F1 kompletná sekvencia',meta:'20 min',desc:'Celá sekvencia F1.',feel:''},
+      {n:2,name:'4 testy pred Fázou 3',meta:'10 min',desc:'1. Pravá ruka — plná vonkajšia rotácia? Pritiahnutie k hrudi?\n2. Dokážeš urobiť 10 bird-dogov bez nakláňania panvy?\n3. Single-leg bridge ľavá — je symetrická s pravou?\n4. Step-up ľavou — ide bez nakláňania trupu?\n\nAk 3/4 áno → pokračuj do F3 po T5. Ak nie → predĺž F2 o týždeň.',feel:'Nie je cieľom ísť rýchlo. Cieľom je ísť správne.'},
+    ]}
+  ]},
+
+  // FÁZA 2 — Týždeň 5
+  {phase:2,week:5,dow:1,label:'Pondelok',title:'Konsolidácia F2 — progres',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný.',feel:''}]},
+    {title:'T4 s progresom',exs:[
+      {n:2,name:'Clamshell L — 3×25 alebo silnejšia guma',meta:'Progres od T4',desc:'Zopakuj T4. Kde môžeš progresovať: Clamshell L → 3×25 alebo silnejšia guma; External rotation → stredná guma; Bird-dog → výdrž 8s; Face pull → stredná guma.',feel:'Cieľ nie je pridávať nové pohyby — cieľ je robiť existujúce pohyby s väčšou istotou, lepšou formou a menšou námahou.'},
+    ]}
+  ]},
+  {phase:2,week:5,dow:2,label:'Utorok',title:'Rameno + Lopatka konsolidácia',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Štandardný.',feel:''}]},
+    {title:'T4 Ut — s progresom',exs:[
+      {n:2,name:'External rotation stredná guma + Face pull progres',meta:'Rovnaké sety ako T4',desc:'External rotation 3×15 P + 3×12 L so strednou gumou. Face pull s predĺženou rotáciou 3×12. Prone Y-T-W s závaží 3×10.',feel:'Ak forma strednej gumy nie je dobrá — zostaň na ľahkej.'},
+    ]}
+  ]},
+  {phase:2,week:5,dow:3,label:'Streda',title:'Integrácia + Circuit progres',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný.',feel:''}]},
+    {title:'T4 St+Št — kombinácia',exs:[
+      {n:2,name:'Circuit: Lateral walk + Face pull + Bird-dog (8s výdrž) + Dead bug s gumou',meta:'3 kruhy · progres od T4',desc:'Rovnaký circuit ako T4 štvrtok, ale bird-dog s výdržou 8s a dead bug s gumou. 3 kruhy.',feel:'Toto je tvoj najsilnejší tréning doteraz. Ak ho dokončíš s dobrou formou — si ready na F3.'},
+    ]}
+  ]},
+  {phase:2,week:5,dow:4,label:'Štvrtok',title:'Aktívna regenerácia',duration:'~25 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Regenerácia pred záverečným testom',exs:[
+      {n:1,name:'F1 kompletná sekvencia',meta:'20 min',desc:'Celá F1 sekvencia. Zameraj sa na miesta kde stále cítiš napätie.',feel:'Deň pred testom — nie je čas na záťaž, je čas na uvoľnenie.'},
+      {n:2,name:'Sleeper stretch predĺžený',meta:'4 × 45s pravé rameno',desc:'Predĺžená verzia — 4 sety namiesto 3. Posledná investícia pred záverečným testom.',feel:'Zajtra test rotácie. Dnes ho pripravíš.'},
+    ]}
+  ]},
+  {phase:2,week:5,dow:5,label:'Piatok',title:'Záverečné testy — ready na F3?',duration:'~25 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
+   sections:[
+    {title:'Testy + rozhodnutie',exs:[
+      {n:1,name:'F1 warm-up',meta:'6 min',desc:'Štandardný.',feel:''},
+      {n:2,name:'Záverečné testy F2 — 4 pohyby',meta:'20 min',desc:'1. Pravá ruka — plná vonkajšia rotácia? Pritiahnutie k hrudi plne?\n2. 10 bird-dogov bez nakláňania panvy?\n3. Single-leg bridge ľavá — symetria s pravou?\n4. Step-up ľavou — bez nakláňania trupu?\n\nAk 4/4 → si ready na F3.',feel:'Koniec fázy 2 = prvýkrát od operácie by si mal cítiť, že telo pracuje ako celok. Ľavá strana silnejšia, rameno pohyblivejšie, core funkčný.'},
+    ]}
+  ]},
+
+  // FÁZA 3 — Týždeň 6
+  {phase:3,week:6,dow:1,label:'Pondelok',title:'Push pattern intro',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up (skrátený F1)',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min · povinný',desc:'Bránicové dýchanie 2 min → Half-kneeling L 1 min → Thoracic rotation 2 min → Sleeper stretch 1 min.',feel:'Toto budeš robiť pred každým tréningom navždy. 6 minút = poistka chrbtice.'}]},
+    {title:'Kalistenické základy',exs:[
+      {n:2,name:'Incline push-up (ruky na stoličke)',meta:'3 × 10 · 3s dole, 1s hore',desc:'Ruky na stoličke, telo v priamej línii. Pomaly dole (3s), hore (1s). Lakte mierne k telu (nie do strán 90°). Lopatky aktívne — pri kliku dole lopatky k sebe, hore od seba (protrakcia).',feel:'Incline znižuje záťaž na rameno. Správne lopatky pri kliku sú to čo si trénoval celé mesiace.',warn:'Ak cítiš bolesť (nie len námahu) v pravom ramene — zastav.'},
+      {n:3,name:'Clamshell L + Bird-dog — maintenance',meta:'Clamshell 2×15 + Bird-dog 2×8',desc:'Udržiavacia dávka F2 pohybov. Zostávajú každý tréning.',feel:'Nikdy nevynechaj tieto pohyby. Ľavý gluteus potrebuje konštantný stimulus.'},
+      {n:4,name:'Squat s dôrazom na symetriu',meta:'3 × 10 · pomalé · bez závaží',desc:'Nohy na šírku ramien, prsty mierne von. Dole 3s, hore 1s. Kolená sledujú prsty. Sleduj symetriu — nakláňaš sa viac na pravú alebo ľavú?',feel:'Drep bez závaží je test. Ak si symetrický — panva robí pokroky.'},
+    ]}
+  ]},
+  {phase:3,week:6,dow:2,label:'Utorok',title:'Pull pattern intro',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Bránicové dýchanie 2 min → Half-kneeling L 1 min → Thoracic rotation 2 min → Sleeper stretch 1 min.',feel:''}]},
+    {title:'Pull + Rameno',exs:[
+      {n:2,name:'Inverted row (pod stolom alebo band row)',meta:'3 × 8 · pomalé',desc:'Ľahni pod pevný stôl. Drž hranu stola, telo v línii. Ťahaj hrudník k stolu — lakte idú dozadu. Lopatky aktívne k sebe pri ťahu. Alternatíva: band-assisted row — guma za dvere vo výške hrudníka, ťahaj k sebe v stoji s predklonom.',feel:'Pull pattern je rovnako dôležitý ako push. Toto je základ pre prípadné zhyby neskôr.'},
+      {n:3,name:'Face pull + External rotation superset',meta:'3 × (12 FP + 12 ER) bez pauzy',desc:'Face pull 12 opakovaní → okamžite vonkajšia rotácia 12 opakovaní → 45s pauza → opakuj.',feel:'Po 6 týždňoch by si mal cítiť, že vonkajšia rotácia je výrazne voľnejšia ako na začiatku.'},
+      {n:4,name:'Reverse lunge — ľavá noha vzadu',meta:'3 × 8 každá strana',desc:'Pravá noha ide dozadu (reverse lunge) — ľavá predná noha nesie záťaž. Koleno prednej nohy nad členkom. Zadné koleno sa takmer dotkne zeme. Hore cez ľavú pätu.',feel:'Priamo zaťažuje ľavý gluteus v funkčnom pohybovom vzore.',warn:'Ak cítiš nekomfort v ľavej slabine pri klesaní — skráť rozsah.'},
+    ]}
+  ]},
+  {phase:3,week:6,dow:3,label:'Streda',title:'Mobilita + Core deň',duration:'~35 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Reset deň',exs:[
+      {n:1,name:'F1 kompletná sekvencia',meta:'20 min · každú stredu',desc:'Každú stredu v F3 robíš celú F1 sekvenciu. Toto je tvoj "reset" deň — namiesto pridávania záťaže investuješ do mobility a uvoľnenia. Po pracovnom týždni za stolom je toto zlato.',feel:'Záchrana pred regresiou. Bez tohto by platničky a rameno postupne tuhli znova.'},
+      {n:2,name:'Hollow body hold — intro',meta:'3 × 10–20s výdrž',desc:'Ležmo na chrbte. Ruky nad hlavou (alebo pri tele pre začiatok). Zdvihni ramená a nohy od podložky — driek stlačený k podložke (kritické!). Tvar "banánu". Ak driek odchádza — pokrč kolená.',feel:'Hollow body je základ kalisteniky — planche, zhyby, dipy, všetko stojí na hollow body tensione.'},
+    ]}
+  ]},
+  {phase:3,week:6,dow:4,label:'Štvrtok',title:'Push + Pull — prvý circuit',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Kalisteniký circuit — 3 kruhy',exs:[
+      {n:2,name:'Circuit: Incline push-up + Inverted row + Squat + Dead bug',meta:'3 kruhy · 45s pauza',desc:'Incline push-up 10 → Inverted row 8 → Squat 10 → Dead bug 8+8. 45s pauza medzi kruhmi. 3 kruhy.',feel:'Gratulujeme — toto je bod kde prechádza rehabilitácia do tréningu.'},
+    ]}
+  ]},
+  {phase:3,week:6,dow:5,label:'Piatok',title:'Aktívny odpočinok + hodnotenie',duration:'~25 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Hodnotenie',exs:[
+      {n:1,name:'Ľahká F1 sekvencia',meta:'15 min',desc:'Skrátená F1 sekvencia.',feel:''},
+      {n:2,name:'5 testov týždeň 6',meta:'10 min',desc:'1. Pravá ruka — plná vonkajšia rotácia? Pritiahnutie k hrudi?\n2. Squat — symetria (žiadne nakláňanie)?\n3. Incline push-up — lopatky správne?\n4. Slabiny L — žiadny nekomfort pri lungu?\n5. Ako sa cítiš celkovo oproti týždňu 1?',feel:'Číslo 5 je dôležité. Subjektívne pocity sú valídne dáta.'},
+    ]}
+  ]},
+
+  // FÁZA 3 — Týždeň 7
+  {phase:3,week:7,dow:1,label:'Pondelok',title:'Push progres — bližšie k zemi',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Push progres',exs:[
+      {n:2,name:'Pike push-up alebo knee push-up',meta:'3 × 8–10',desc:'Ak incline šiel dobre: Pike push-up (ruky na podlahe, zadok hore — uhlopriečne telo = ľahší shoulder press variant). Alebo knee push-up → full push-up podľa sily. Lopatky aktívne celý čas.',feel:'Postupujeme smerom k plnému push-upu. Forma nad počtom.'},
+      {n:3,name:'Bulgarian split squat — ľavá predná',meta:'3 × 8 každá strana',desc:'Zadná noha na stoličke, predná noha vpred. Klesaj dole — ľavý predný gluteus drží záťaž. Hore pomaly. Trup rovno.',feel:'Priamy dôraz na ľavý gluteus v plnom rozsahu. Najsilnejší unilaterálny pohyb doteraz.',warn:'Ak cítiš nekomfort v ľavej slabine — skráť rozsah alebo sa vráť k step-upu.'},
+      {n:4,name:'Hollow body + Clamshell L + Bird-dog',meta:'Maintenance: 2×15s / 2×15 / 2×8',desc:'Maintenance dávka core + gluteus. Každý tréning.',feel:'Toto nikdy nevynecháš.'},
+    ]}
+  ]},
+  {phase:3,week:7,dow:2,label:'Utorok',title:'Pull progres — väčší uhol',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Pull progres',exs:[
+      {n:2,name:'Inverted row — telo nižšie (väčší uhol)',meta:'3 × 8 · ťažšia verzia',desc:'Rovnaký pohyb ako T6, ale choď nižšie — päty ďalej od stola, telo viac horizontálne = ťažší odpor. Ak máš hrazdu: band-assisted zhyb — guma pod kolená, len práca lopatiek + trochu ťahu.',feel:'Každý centimeter nižšie = väčší odpor. Sleduj či lopatky stále pracujú.'},
+      {n:3,name:'Face pull stredná guma + ER superset',meta:'3 × (12+12)',desc:'Rovnaký superset ako T6 ale stredná guma na face pull.',feel:'Po 7 týždňoch pravé rameno by malo mať výrazne lepšiu rotáciu.'},
+      {n:4,name:'Reverse lunge + Lateral walk — superset',meta:'3 × (8 lunges + 12 walk každá strana)',desc:'Reverse lunge L 8 → okamžite lateral band walk 12+12 → 45s pauza.',feel:'Kombinácia unilaterálneho a bilaterálneho gluteus. Panva dostáva komplexný stimulus.'},
+    ]}
+  ]},
+  {phase:3,week:7,dow:3,label:'Streda',title:'Mobilita reset + Ab wheel',duration:'~35 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Reset deň',exs:[
+      {n:1,name:'F1 kompletná sekvencia',meta:'20 min',desc:'Celá F1 sekvencia.',feel:'Každú stredu. Nikdy nevynechaj.'},
+      {n:2,name:'Ab wheel roll-out z kľačmo (alebo plank 30–40s)',meta:'3 × 5–8 alebo 3 × 30–40s',desc:'Ab wheel: z kľačmo, pomaly vpred (driek sa nesmie prohnúť), späť. Len na rozsah kde dokážeš udržať neutrálny driek. Alternatíva: plank s výdržou 30–40s — driek neutrálny, nie zadok hore.',feel:'Predĺžená hollow body pozícia s pohybom. Toto je základ pre pokročilú kalisteniku.'},
+    ]}
+  ]},
+  {phase:3,week:7,dow:4,label:'Štvrtok',title:'Full body circuit — progres',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Circuit progres — 3 kruhy',exs:[
+      {n:2,name:'Circuit: Pike/knee push-up + Inverted row (nízko) + Bulgarian split squat + Dead bug s gumou',meta:'3 kruhy · 45s pauza',desc:'Pike alebo knee push-up 8 → Inverted row nízko 8 → Bulgarian split squat L 8 + P 8 → Dead bug s gumou 8+8. 45s pauza.',feel:'Toto je tvoj najsilnejší tréning doteraz. Komplexný, symetrický, funkčný.'},
+    ]}
+  ]},
+  {phase:3,week:7,dow:5,label:'Piatok',title:'Aktívny odpočinok T7',duration:'~20 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Odpočinok + monitoring',exs:[
+      {n:1,name:'Ľahká F1 + Sleeper stretch',meta:'15 min',desc:'Skrátená F1. Sleeper stretch 4×45s.',feel:''},
+      {n:2,name:'Kontrolné otázky T7',meta:'5 min reflexia',desc:'Je ľavá strana výrazne slabšia pri squate/lungu? Je pravé rameno symetrické s ľavým pri push-upe? Cítiš istotu v pohybe? Ak áno na všetky → si pripravený na T8+ dlhodobý protokol.',feel:'T7 je posledný "rehabilitačný" týždeň. Od T8 si atléta ktorý trénuje aj s históriou svojho tela.'},
+    ]}
+  ]},
+
+  // FÁZA 3 — Týždeň 8+
+  {phase:3,week:8,dow:1,label:'Pondelok',title:'Push deň — dlhodobý protokol',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min · navždy povinný',desc:'Bránicové dýchanie 2 min → Half-kneeling L 1 min → Thoracic rotation 2 min → Sleeper stretch 1 min.',feel:'Toto robíš pred každým tréningom do konca. Poistka pre L4-L5 a L5-S1.'}]},
+    {title:'Push progres',exs:[
+      {n:2,name:'Full push-up alebo pike push-up',meta:'3 × 8–12 · podľa sily',desc:'Full push-up ak zvládaš. Ak nie — knee push-up s dôrazom na formu. Lopatky aktívne (protrakcia hore, retrakcia dole). Tempo 3-1-1.',feel:'Každý týždeň +1-2 opakovania alebo ťažší variant keď zvládaš 3×12 s dobrou formou.'},
+      {n:3,name:'Bulgarian split squat progres',meta:'3 × 10 každá strana',desc:'Keď zvládaš 3×10 s dobrou formou → pridaj závaží (batoh s knihami, fľaše vody v rukách).',feel:'Ľavá strana zostáva priorita. Ak asymetria pretrváva — ľavej strane +1 set navyše.'},
+      {n:4,name:'Hollow body + Clamshell L + Bird-dog',meta:'Maintenance',desc:'2×20s hollow body / 2×15 clamshell L / 2×8 bird-dog. Každý tréning.',feel:'Maintenance. Nikdy nevynecháš.'},
+    ]}
+  ]},
+  {phase:3,week:8,dow:2,label:'Utorok',title:'Pull deň — dlhodobý protokol',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Pull progres',exs:[
+      {n:2,name:'Inverted row / band-assisted zhyb progres',meta:'3 × 8–10',desc:'Inverted row čo najnižšie. Keď zvládaš horizontálnu pozíciu s dobrou formou → prejdi na band-assisted zhyb na hrazde. Cieľ je plný zhyb.',feel:'Zhyb je vrchol pull progressie. Každý centimeter nižšie / každé oslabenie gumy je progres.'},
+      {n:3,name:'Face pull + External rotation — silná guma',meta:'3 × (15+15)',desc:'Silnejšia guma ako v T7. Udržuj formu — lopatky dole a k sebe v krajnej pozícii.',feel:'Pravé rameno by malo mať teraz plnú rotáciu. Ak nie — sleeper stretch každý deň stále.'},
+      {n:4,name:'Reverse lunge progres — s závaží',meta:'3 × 10 každá strana',desc:'Fľaše vody alebo batoh ako závaží. Ľavá priorita.',feel:'Funkčná sila ľavého gluteus v pohybe.'},
+    ]}
+  ]},
+  {phase:3,week:8,dow:3,label:'Streda',title:'Mobilita + Core — navždy',duration:'~35 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Reset deň — každú stredu navždy',exs:[
+      {n:1,name:'F1 kompletná sekvencia',meta:'20 min',desc:'Celá F1 sekvencia. Každú stredu. Nikdy nevynechaj.',feel:'Toto je tvoja ochrana pred recidívou problémov s platničkami a ramenom.'},
+      {n:2,name:'Ab wheel + Hollow body hold progres',meta:'3 × 8–10 AW + 3 × 20–30s HB',desc:'Ab wheel: väčší rozsah keď zvládaš predchádzajúci. Hollow body: predlžuj výdrž každý týždeň.',feel:'Core je základ. Bez neho sa všetko ostatné rozpadne.'},
+    ]}
+  ]},
+  {phase:3,week:8,dow:4,label:'Štvrtok',title:'Full body — dlhodobý protokol',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Full body circuit — dlhodobý',exs:[
+      {n:2,name:'Circuit: Push + Pull + Legs + Core',meta:'3–4 kruhy · 45s pauza',desc:'Push-up variant (čo najťažší s dobrou formou) 8–10 → Inverted row/zhyb variant 8 → Bulgarian split squat 8+8 → Ab wheel / hollow body 20s. 3–4 kruhy.',feel:'Toto je tvoj základný tréning. Každý týždeň hľadáš ťažší variant niektorého pohybu.'},
+    ]}
+  ]},
+  {phase:3,week:8,dow:5,label:'Piatok',title:'Aktívny odpočinok — dlhodobý protokol',duration:'~25 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
+   sections:[
+    {title:'Odpočinok + pravidlá',exs:[
+      {n:1,name:'F1 sekvencia + Sleeper stretch',meta:'20 min',desc:'Skrátená F1 + sleeper stretch 3×45s.',feel:''},
+      {n:2,name:'Permanentné pravidlá — prečítaj občas',meta:'Referencia',desc:'1. F1 warm-up NIKDY nevynecháš\n2. Ľavý gluteus — clamshell alebo lateral walk každý tréning (maintenance)\n3. Sleeper stretch každý deň kým nemáš plnú symetrickú rotáciu oboch ramien\n4. Ak sa objaví bolesť (nie len námaha) — krok späť, nie vpred\n5. Sedavá práca = každú hodinu vstaneš a urobíš 10 hip hinges + 5 thoracic rotácií\n\nČervené vlajky — ihneď zastav a choď k lekárovi:\n• Ostrá bolesť v slabinách pri záťaži\n• Brnenie alebo necitlivosť v nohe alebo ruke\n• Bolesť v dolnej časti chrbta vystreľujúca do nohy\n• Opuch alebo teplo v kĺbe',feel:'Toto nie je rehabilitácia. Toto je tvoj tréning. Rehabilitácia skončila niekde v Fáze 2.'},
+    ]}
+  ]},
+];
+
+// DOW mapping: 1=Po, 2=Ut, 3=St, 4=Štvrtok, 5=Pi
+const DOW_NAMES = ['','Pondelok','Utorok','Streda','Štvrtok','Piatok'];
+const TOTAL_DAYS = PLAN.length;
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let startDate = null;
+let currentIdx = 0;
+let sessionStarted = false;
+let completedDays = {};
+let timerInterval = null;
+let timerSeconds = 0;
+
+function loadState(){
+  startDate = localStorage.getItem('rehab_start') || null;
+  currentIdx = parseInt(localStorage.getItem('rehab_idx')||'0');
+  completedDays = JSON.parse(localStorage.getItem('rehab_done')||'{}');
+  if(currentIdx>=TOTAL_DAYS) currentIdx=TOTAL_DAYS-1;
+}
+function saveState(){
+  localStorage.setItem('rehab_idx',currentIdx);
+  localStorage.setItem('rehab_done',JSON.stringify(completedDays));
+}
+
+// ─── SETUP ──────────────────────────────────────────────────────────────────
+function saveStart(){
+  const d = document.getElementById('startDate').value;
+  if(!d){alert('Zadaj dátum');return;}
+  localStorage.setItem('rehab_start',d);
+  startDate=d;
+  // compute today's plan index
+  const start = new Date(d);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  start.setHours(0,0,0,0);
+  const diff = Math.floor((today-start)/(1000*60*60*24));
+  // map diff to plan index: only weekdays (5 per week)
+  const week = Math.floor(diff/7);
+  const dayOfWeek = today.getDay(); // 0=Sun,1=Mon...5=Fri,6=Sat
+  let dow = dayOfWeek; // 1-5 = Mon-Fri
+  if(dow===0||dow===6){ dow=1; } // weekend → show Monday
+  // find matching plan entry
+  let targetWeek = week+1; // 1-indexed
+  if(targetWeek>8) targetWeek=8;
+  let idx = PLAN.findIndex(d=>d.week===targetWeek && d.dow===dow);
+  if(idx<0){
+    // find any in that week
+    idx = PLAN.findIndex(d=>d.week===targetWeek);
+    if(idx<0) idx=0;
+  }
+  currentIdx=idx;
+  saveState();
+  document.getElementById('setup').style.display='none';
+  document.getElementById('app').style.display='block';
+  renderDay();
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+window.onload=function(){
+  // set today's date as default
+  const t=new Date();
+  const yyyy=t.getFullYear();
+  const mm=String(t.getMonth()+1).padStart(2,'0');
+  const dd=String(t.getDate()).padStart(2,'0');
+  document.getElementById('startDate').value=`${yyyy}-${mm}-${dd}`;
+
+  loadState();
+  if(!startDate){
+    document.getElementById('setup').style.display='flex';
+    document.getElementById('app').style.display='none';
+  } else {
+    document.getElementById('setup').style.display='none';
+    document.getElementById('app').style.display='block';
+    // auto-navigate to today
+    navigateToToday();
+    renderDay();
+  }
+};
+
+function navigateToToday(){
+  if(!startDate) return;
+  const start=new Date(startDate);
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  start.setHours(0,0,0,0);
+  const diff=Math.floor((today-start)/(1000*60*60*24));
+  const weekNum=Math.floor(diff/7)+1;
+  let dayOfWeek=today.getDay();
+  if(dayOfWeek===0||dayOfWeek===6){dayOfWeek=1;}
+  const clampedWeek=Math.min(Math.max(weekNum,1),8);
+  let idx=PLAN.findIndex(d=>d.week===clampedWeek&&d.dow===dayOfWeek);
+  if(idx<0) idx=PLAN.findIndex(d=>d.week===clampedWeek);
+  if(idx>=0) currentIdx=idx;
+}
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+function goDay(dir){
+  currentIdx=Math.max(0,Math.min(TOTAL_DAYS-1,currentIdx+dir));
+  sessionStarted=false;
+  clearTimer();
+  saveState();
+  renderDay();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── RENDER ─────────────────────────────────────────────────────────────────
+function renderDay(){
+  const d=PLAN[currentIdx];
+  const isDone=completedDays[currentIdx]===true;
+
+  // top badge
+  document.getElementById('topBadge').textContent=`F${d.phase} · T${d.week} · ${d.label}`;
+
+  // nav arrows
+  const prev=document.getElementById('btnPrev');
+  const next=document.getElementById('btnNext');
+  const prev2=document.getElementById('btnPrev2');
+  const next2=document.getElementById('btnNext2');
+  [prev,prev2].forEach(b=>{b.classList.toggle('disabled',currentIdx===0);});
+  [next,next2].forEach(b=>{b.classList.toggle('disabled',currentIdx===TOTAL_DAYS-1);});
+
+  // header
+  const phaseColors={ph1:'#5b8fc4',ph2:'#5db87a',ph3:'#d4a843'};
+  document.getElementById('dhPhase').innerHTML=`<span style="color:${phaseColors[d.color]}">${d.phaseLabel}</span>`;
+  document.getElementById('dhTitle').textContent=`${d.label} — ${d.title}`;
+  document.getElementById('dhMeta').innerHTML=`
+    <span>Týždeň ${d.week}</span>
+    <span>${d.duration}</span>
+    <span>Deň ${currentIdx+1} z ${TOTAL_DAYS}</span>
+  `;
+
+  // status bar
+  renderStatusBar(isDone);
+
+  // exercises
+  const list=document.getElementById('exList');
+  list.innerHTML='';
+  list.className=`ex-list phase-color-${d.phase}`;
+
+  d.sections.forEach(sec=>{
+    const div=document.createElement('div');
+    div.className='sec-div';
+    div.textContent=sec.title;
+    list.appendChild(div);
+    sec.exs.forEach(ex=>{
+      list.appendChild(buildExCard(ex));
+    });
+  });
+}
+
+function renderStatusBar(isDone){
+  const sb=document.getElementById('statusBar');
+  const info=document.getElementById('sbInfo');
+  const btn=document.getElementById('btnAction');
+
+  if(isDone){
+    info.innerHTML='';
+    sb.innerHTML=`<div class="completed-tag">Tréning splnený</div><button class="btn-done" onclick="unmarkDone()" style="background:none;border-color:var(--muted);color:var(--muted);">Zrušiť</button>`;
+  } else if(sessionStarted){
+    sb.innerHTML=`
+      <div>
+        <div class="sb-info"><strong>Tréning prebieha</strong></div>
+        <div class="timer-row"><div class="timer-display" id="timerDisp">0:00</div><div class="timer-label">minút</div></div>
+      </div>
+      <button class="btn-done" id="btnAction" onclick="handleAction()">✓ Hotovo</button>
+    `;
+    startTimer();
+  } else {
+    sb.innerHTML=`
+      <div class="sb-info" id="sbInfo">Pripravený na tréning</div>
+      <button class="btn-start" id="btnAction" onclick="handleAction()">Štart</button>
+    `;
+  }
+}
+
+function handleAction(){
+  const isDone=completedDays[currentIdx]===true;
+  if(isDone) return;
+  if(!sessionStarted){
+    sessionStarted=true;
+    renderStatusBar(false);
+  } else {
+    markDone();
+  }
+}
+
+function markDone(){
+  completedDays[currentIdx]=true;
+  sessionStarted=false;
+  clearTimer();
+  saveState();
+  renderStatusBar(true);
+  // confetti-like flash
+  document.body.style.transition='background .3s';
+  document.body.style.background='#0e1a10';
+  setTimeout(()=>{document.body.style.background='var(--bg)';},400);
+}
+
+function unmarkDone(){
+  completedDays[currentIdx]=false;
+  sessionStarted=false;
+  saveState();
+  renderStatusBar(false);
+}
+
+// ─── TIMER ──────────────────────────────────────────────────────────────────
+function startTimer(){
+  timerSeconds=0;
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{
+    timerSeconds++;
+    const disp=document.getElementById('timerDisp');
+    if(disp){
+      const m=Math.floor(timerSeconds/60);
+      const s=String(timerSeconds%60).padStart(2,'0');
+      disp.textContent=`${m}:${s}`;
+    }
+  },1000);
+}
+function clearTimer(){clearInterval(timerInterval);timerInterval=null;timerSeconds=0;}
+
+// ─── EXERCISE CARDS ─────────────────────────────────────────────────────────
+function buildExCard(ex){
+  const card=document.createElement('div');
+  card.className='ex-card';
+  let bodyHTML=``;
+  if(ex.desc){bodyHTML+=`<div class="ex-sect"><div class="ex-sect-label">Postup</div><div class="ex-sect-text">${ex.desc.replace(/\n/g,'<br>')}</div></div>`;}
+  if(ex.feel){bodyHTML+=`<div class="feel-box">💡 ${ex.feel}</div>`;}
+  if(ex.why){bodyHTML+=`<div class="ex-sect"><div class="ex-sect-label">Prečo to robíš</div><div class="ex-sect-text">${ex.why}</div></div>`;}
+  if(ex.warn){bodyHTML+=`<div class="warn-box">⚠ ${ex.warn}</div>`;}
+  card.innerHTML=`
+    <div class="ex-head" onclick="toggleCard(this)">
+      <div class="ex-n">${ex.n}</div>
+      <div class="ex-info">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-meta">${ex.meta}</div>
+      </div>
+      <div class="ex-chev">▶</div>
+    </div>
+    <div class="ex-body">${bodyHTML}</div>
+  `;
+  return card;
+}
+
+function toggleCard(head){
+  const card=head.parentElement;
+  card.classList.toggle('open');
+}
+
+// ─── HISTORY OVERLAY ────────────────────────────────────────────────────────
+function showOverlay(){
+  buildOverlay();
+  document.getElementById('overlay').classList.add('show');
+}
+function hideOverlay(){document.getElementById('overlay').classList.remove('show');}
+function overlayClick(e){if(e.target===document.getElementById('overlay'))hideOverlay();}
+
+function buildOverlay(){
+  const done=Object.values(completedDays).filter(Boolean).length;
+  const total=TOTAL_DAYS;
+  const streak=calcStreak();
+  let html=`<div class="ov-stats">
+    <div class="ov-stat"><div class="ov-stat-val">${done}</div><div class="ov-stat-label">splnených</div></div>
+    <div class="ov-stat"><div class="ov-stat-val">${total-done}</div><div class="ov-stat-label">zostatok</div></div>
+    <div class="ov-stat"><div class="ov-stat-val">${streak}</div><div class="ov-stat-label">v rade</div></div>
+  </div>`;
+
+  // group by phase+week
+  let curPhase=0,curWeek=0;
+  let weekDays=[];
+  const flushWeek=()=>{
+    if(!weekDays.length)return;
+    html+=`<div class="ov-week"><div class="ov-week-label">Fáza ${curPhase} · Týždeň ${curWeek}</div><div class="ov-days">`;
+    weekDays.forEach(({idx,d})=>{
+      const isDone=completedDays[idx]===true;
+      const isCurrent=idx===currentIdx;
+      let cls='ov-day';
+      if(isDone)cls+=' done';
+      else if(isCurrent)cls+=' today';
+      else if(idx>currentIdx)cls+=' future';
+      html+=`<div class="${cls}" onclick="jumpTo(${idx});hideOverlay()" title="${d.label}">${d.label.substring(0,2)}</div>`;
+    });
+    html+=`</div></div>`;
+    weekDays=[];
+  };
+  PLAN.forEach((d,idx)=>{
+    if(d.phase!==curPhase||d.week!==curWeek){
+      flushWeek();
+      curPhase=d.phase;curWeek=d.week;
+    }
+    weekDays.push({idx,d});
+  });
+  flushWeek();
+  html+=`<div class="ov-reset"><button class="ov-reset-btn" onclick="resetAll()">Resetovať históriu</button></div>`;
+  document.getElementById('overlayContent').innerHTML=html;
+}
+
+function jumpTo(idx){currentIdx=idx;sessionStarted=false;clearTimer();saveState();renderDay();window.scrollTo({top:0});}
+
+function calcStreak(){
+  let s=0;
+  for(let i=currentIdx;i>=0;i--){
+    if(completedDays[i])s++;else break;
+  }
+  return s;
+}
+
+function resetAll(){
+  if(!confirm('Vymazať celú históriu splnených tréningov?'))return;
+  completedDays={};
+  saveState();
+  hideOverlay();
+  renderDay();
+}
+</script>
+</body>
+</html>
