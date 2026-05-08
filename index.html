@@ -68,10 +68,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
 .status-bar{margin:0 20px 20px;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .sb-info{font-size:12px;color:var(--muted);}
 .sb-info strong{color:var(--text);}
-.btn-start{background:var(--green);border:none;border-radius:8px;color:#0b0c0b;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.05em;padding:10px 20px;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.btn-start:hover{background:var(--green2);color:var(--text);}
+
 .btn-done{background:var(--s3);border:1px solid var(--green);border-radius:8px;color:var(--green);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.05em;padding:10px 20px;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .btn-done:hover{background:var(--green);color:#0b0c0b;}
+.btn-undo{background:none;border:1px solid var(--muted2);border-radius:8px;color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;padding:6px 14px;cursor:pointer;}
 .completed-tag{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--green);}
 .completed-tag::before{content:'✓';font-size:16px;}
 
@@ -86,9 +86,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
 .phase-color-2 .ex-n{background:rgba(93,184,122,.12);color:var(--green);}
 .phase-color-3 .ex-n{background:rgba(212,168,67,.12);color:var(--yellow);}
 .ex-info{flex:1;min-width:0;}
-.ex-name{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ex-meta{font-size:11px;color:var(--muted);margin-top:2px;}
-.ex-chev{color:var(--muted2);font-size:11px;transition:transform .2s;flex-shrink:0;}
+.ex-name{font-size:14px;color:var(--text);font-weight:400;line-height:1.3;}
+.ex-meta{font-size:11px;color:var(--muted2);margin-top:4px;letter-spacing:.02em;}
+.ex-chev{color:var(--muted2);font-size:10px;transition:transform .2s;flex-shrink:0;}
 .ex-card.open .ex-chev{transform:rotate(90deg);}
 .ex-body{display:none;padding:0 16px 16px 54px;border-top:1px solid var(--border);}
 .ex-card.open .ex-body{display:block;}
@@ -124,10 +124,34 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
 .ov-reset{margin-top:20px;text-align:center;}
 .ov-reset-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted2);font-family:'DM Mono',monospace;font-size:11px;padding:8px 16px;cursor:pointer;}
 
-/* TIMER */
-.timer-row{display:flex;align-items:center;gap:8px;margin-top:6px;}
-.timer-display{font-family:'Fraunces',serif;font-size:20px;font-weight:200;color:var(--yellow);min-width:60px;}
-.timer-label{font-size:11px;color:var(--muted);}
+
+
+
+/* PROGRESS BAR */
+.prog-wrap{padding:0 20px 20px;}
+.prog-track{height:8px;background:var(--s3);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;transition:width .4s ease;background:linear-gradient(90deg,var(--blue),var(--green));min-width:4px;}
+.prog-label{font-size:11px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between;}
+
+/* CONFIRM OVERLAY */
+#confirmBox{position:fixed;inset:0;background:rgba(11,12,11,.85);backdrop-filter:blur(6px);z-index:60;display:none;align-items:center;justify-content:center;padding:24px;}
+#confirmBox.show{display:flex;}
+.confirm-inner{background:var(--s1);border:1px solid var(--border2);border-radius:16px;padding:28px;max-width:320px;width:100%;text-align:center;}
+.confirm-title{font-family:'Fraunces',serif;font-size:20px;font-weight:200;margin-bottom:8px;}
+.confirm-sub{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:24px;}
+.confirm-btns{display:flex;gap:10px;}
+.confirm-yes{flex:1;background:var(--green);border:none;border-radius:8px;color:#0b0c0b;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;padding:13px;cursor:pointer;}
+.confirm-no{flex:1;background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;padding:13px;cursor:pointer;}
+
+/* NEXT DAY TOAST */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s2);border:1px solid var(--green);border-radius:10px;padding:12px 20px;font-size:12px;color:var(--green);opacity:0;transition:all .3s;z-index:40;white-space:nowrap;pointer-events:none;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* SETTINGS in overlay */
+.ov-settings{margin-top:20px;padding-top:20px;border-top:1px solid var(--border);}
+.ov-settings-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.ov-settings-btn{width:100%;background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:10px;cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.ov-settings-btn:hover{border-color:var(--border2);color:var(--text);}
 
 /* PHASE DOT */
 .ph1{color:var(--blue);}
@@ -171,6 +195,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
     </div>
   </div>
 
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-label"><span id="progLeft"></span><span id="progRight"></span></div>
+  </div>
   <div class="day-header">
     <div class="dh-phase" id="dhPhase"></div>
     <div class="dh-title" id="dhTitle"></div>
@@ -179,7 +207,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
 
   <div class="status-bar" id="statusBar">
     <div class="sb-info" id="sbInfo">Pripravený na tréning</div>
-    <button class="btn-start" id="btnAction" onclick="handleAction()">Štart</button>
   </div>
 
   <div class="ex-list" id="exList"></div>
@@ -235,8 +262,8 @@ const PLAN = [
   {phase:1,week:1,dow:2,label:'Utorok',title:'Foam roller + Lopatka',duration:'~20 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
    sections:[
     {title:'Warm-up',exs:[
-      {n:1,name:'Bránicové dýchanie',meta:'3 min',desc:'Rovnaký postup ako v pondelok. Nádych 4s, výdych 6s, brucho hore/dolu.',feel:'Uvoľnenie pred foam rollerom — telo sa pripravuje.'},
-      {n:2,name:'Half-kneeling stretch + Thoracic rotation',meta:'2 min L + 2×8 rotácia',desc:'Skrátená verzia warm-upu: half-kneeling ľavá (2 min) a thoracic rotation na boku (8× každá strana). Od teraz toto robíš ako warm-up každý tréning.',feel:'Tento warm-up budeš robiť pred každým tréningom až do konca. Zapamätaj si poradie.'},
+      {n:1,name:'Bránicové dýchanie',meta:'3 min',desc:'Ľahni na chrbát, kolená pokrčené, ruky na bruchu. Nádych nosom 4s — brucho ide hore. Výdych ústami 6s — brucho klesá, na konci jemne stiahni spodné brucho.',feel:'Uvoľnenie pred foam rollerom — telo sa pripravuje.'},
+      {n:2,name:'Half-kneeling L + Thoracic rotation',meta:'2 min + 2×8 každá strana',desc:'Half-kneeling L (2 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred — ťah v prednom ľavom bedre. Potom thoracic rotation (8× každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba — pohyb len v hrudníku, nie v drieku.',feel:'Tento warm-up budeš robiť pred každým tréningom až do konca. Zapamätaj si poradie.'},
     ]},
     {title:'Foam roller',exs:[
       {n:3,name:'Foam roller — hrudná chrbtica',meta:'3–4 min · pomalé prechody',
@@ -281,14 +308,14 @@ const PLAN = [
   {phase:1,week:1,dow:4,label:'Štvrtok',title:'Opakovanie + Dlhšie výdrže',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
    sections:[
     {title:'Warm-up',exs:[
-      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:'Rovnaký warm-up každý deň.'},
+      {n:1,name:'Warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, ruky na bruchu. Nádych nosom 4s — brucho ide hore. Výdych ústami 6s — brucho klesá, na konci jemne stiahni spodné brucho. Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba.',feel:''},
     ]},
     {title:'Hlavná časť — s pokrokom',exs:[
       {n:2,name:'Bránicové dýchanie — predĺžená verzia s aktiváciou',meta:'8 min · ležmo',
-       desc:'Ako zvyčajne, ale predĺžená. Po 4 minútach pridaj: pri každom výdychu jemne stlač spodné brucho (ako keby si chcel pritiahnúť pupok k chrbtici). Nie brutálne — 20% sily. Drž to počas celého výdychu, pri nádychu uvoľni.',
+       desc:'Ľahni na chrbát, kolená pokrčené, ruky na bruchu. Nádych nosom 4s — brucho hore. Výdych ústami 6s — brucho dolu. Po 4 minútach pridaj: pri každom výdychu jemne stlač spodné brucho smerom k chrbtici — 20% sily max. Drž stiahnutie počas celého výdychu, pri nádychu uvoľni.',
        feel:'Toto je zárodok aktivácie transversus abdominis — najhlbší sval brucha, základ stability chrbtice.'},
       {n:3,name:'Half-kneeling stretch + aktívne stiahnutie',meta:'3 × 45s ľavá strana',
-       desc:'Ako zvyčajne, ale pridaj: v pozícii stretchu jemne stlač koleno zadnej nohy do podložky (izometricky — koleno sa nehýbe). Drž 5s, uvoľni, prejdi hlbšie.',
+       desc:'Kľakni na ľavé koleno (ľavá noha vzadu), pravá noha vpred, chodidlo na podložke. Podsaď panvu a predkloni sa váhou vpred. V tejto pozícii jemne stlač ľavé koleno do podložky (izometricky — koleno sa nehýbe). Drž 5s, uvoľni, prejdi o centimeter hlbšie. Opakuj. Pravá strana: kratšia verzia 30s.',
        feel:'Recipročná inhibícia — keď aktivuješ gluteus, iliopsoas sa musí uvoľniť. Inteligentnejší stretch.'},
       {n:4,name:'Sleeper stretch + Wall angels',meta:'Sleeper 3×45s + Wall angels 3×8',
        desc:'Sleeper stretch — sleduj či sa rozsah mení. Wall angels — si schopný dostať ruky vyššie ako v utorok?',
@@ -299,7 +326,7 @@ const PLAN = [
   {phase:1,week:1,dow:5,label:'Piatok',title:'Celý reťazec — sekvencia',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
    sections:[
     {title:'Warm-up',exs:[
-      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:'Konzistencia.'},
+      {n:1,name:'Warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, ruky na bruchu. Nádych nosom 4s — brucho ide hore. Výdych ústami 6s — brucho klesá, na konci jemne stiahni spodné brucho. Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba.',feel:''},
     ]},
     {title:'Plynulá sekvencia',exs:[
       {n:2,name:'Foam roller hrudník + dýchanie',meta:'4 min',
@@ -309,7 +336,7 @@ const PLAN = [
        desc:'Half-kneeling ľavá (45s) → pravá (30s) → 90-90 ľavá (45s) → pravá (30s) → thoracic rotation ľav na bok 8× → prav na bok 8×. Plynulý flow, nie prerušovaný.',
        feel:'Cieľ: pocítiť telo ako celok, nie ako oddelené časti. Toto je príprava na fázu 2 kde pohyby budú aktívnejšie.'},
       {n:4,name:'Sleeper stretch + záverečné dýchanie',meta:'3×45s + 3 min',
-       desc:'Sleeper stretch ako zvyčajne. Potom záverečné bránicové dýchanie — body scan. Porovnaj ako sa cítiš oproti pondelku.',
+       desc:'Sleeper stretch (3×45s): ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene. Potom bránicové dýchanie 3 min: prechádzaj telom od chodidiel nahor, kde cítiš napätie uvoľni pri výdychu. Porovnaj ako sa cítiš oproti prvému dňu.',
        feel:'Koniec týždňa 1 — si položil základ.'},
     ]}
   ]},
@@ -318,7 +345,7 @@ const PLAN = [
   {phase:1,week:2,dow:1,label:'Pondelok',title:'T1 sekvencia + Dead bug intro',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
    sections:[
     {title:'Warm-up',exs:[
-      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:'Každý deň rovnaký štart.'},
+      {n:1,name:'Warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, ruky na bruchu. Nádych nosom 4s — brucho ide hore. Výdych ústami 6s — brucho klesá, na konci jemne stiahni spodné brucho. Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba.',feel:''},
     ]},
     {title:'Hlavná časť',exs:[
       {n:2,name:'Celá sekvencia Fázy 1 (skrátená)',meta:'Bedrá + foam roller + lopatka · 15 min',
@@ -334,17 +361,17 @@ const PLAN = [
   {phase:1,week:2,dow:2,label:'Utorok',title:'Foam roller kompletný + Wall angels progres',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
    sections:[
     {title:'Warm-up',exs:[
-      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:''},
+      {n:1,name:'Warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, ruky na bruchu. Nádych nosom 4s — brucho ide hore. Výdych ústami 6s — brucho klesá, na konci jemne stiahni spodné brucho. Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba.',feel:''},
     ]},
     {title:'Foam roller + Lopatka progres',exs:[
       {n:2,name:'Foam roller kompletný — hrudník + TFL + gluteus',meta:'6–8 min',
        desc:'Hrudník (3 min) → TFL ľavá (2 min) → gluteus ľavý: sadni si na roller, jedna noha cez druhú (figure-4), rolas po ľavom zadku (2 min). Toto je nová časť — gluteus medius a piriformis, priamo súvisiace s výchylkou panvy.',
        feel:'Ľavý gluteus bude pravdepodobne veľmi citlivý. To je signál — práve tam treba pracovať.'},
       {n:3,name:'Wall angels — progres do Y s výdržou',meta:'3 × 10 · výdrž 3s v Y',
-       desc:'Ako minulý týždeň, ale v Y pozícii (ruky hore) drž 3 sekundy pred návratom. Sústreď sa na stiahnutie dolných trapézov — lopatky dole a k sebe — nie len hore.',
+       desc:'Stoj chrbtom k stene, päty 5cm od steny — zátylie, lopatky aj driek sa dotýkajú steny. Ruky do "W" (lakte a zápästia pri stene). Pomaly posúvaj ruky nahor do "Y" — len na rozsah kde driek neodchádza od steny. V "Y" pozícii drž 3 sekundy, lopatky aktívne dole a k sebe. Späť do "W".',
        feel:'Výdrž v Y polohe aktivuje dolné trapézy a serratus. Presne to, čo chýba keď je lopatka v zlej pozícii.'},
       {n:4,name:'Sleeper stretch + cross-body stretch',meta:'3 × 45s každý',
-       desc:'Sleeper stretch ako zvyčajne. Potom cross-body: pravú ruku daj pred hrudník, ľavou rukou jemne pritiahnuť k hrudi na úrovni ramena. Zadný deltoid a vonkajšia kapsula ramena.',
+       desc:'Sleeper stretch (3×45s): ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene. Potom cross-body stretch (3×30s): v sede alebo v stoji pravú ruku vystri pred seba, ľavou rukou ju pritiahnuť k hrudi na úrovni ramena. Ťah v zadnom deltoid pravého ramena.',
        feel:'Kombinácia sleeper + cross-body = kompletné uvoľnenie zadnej kapsuly pravého ramena.'},
     ]}
   ]},
@@ -352,17 +379,17 @@ const PLAN = [
   {phase:1,week:2,dow:3,label:'Streda',title:'Panva + Dead bug progres',duration:'~25 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
    sections:[
     {title:'Warm-up',exs:[
-      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:''},
+      {n:1,name:'Warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, ruky na bruchu. Nádych nosom 4s — brucho ide hore. Výdych ústami 6s — brucho klesá, na konci jemne stiahni spodné brucho. Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba.',feel:''},
     ]},
     {title:'Panva a core',exs:[
       {n:2,name:'Pelvic tilts + Bridge INTRO',meta:'Pelvic tilts 2×15 → Bridge 3×8',
-       desc:'Pelvic tilts ako zvyčajne. Potom bridge: z tej istej polohy (ľahni chrbát, kolená pokrčené), výdych a pomaly zdvíhaj panvu hore — vertebra po vertebre od kostrče. Hore drž 2s, dolu vertebra po vertebre. Cítiš symetriu medzi L a P zadkom?',
+       desc:'Pelvic tilts (2×15): ľahni na chrbát, kolená pokrčené. Stlač driek k podložke (výdych) — uvoľni (nádych). Malý kontrolovaný pohyb. Potom bridge (3×8): z tej istej polohy výdych a pomaly zdvíhaj panvu vertebra po vertebre od kostrče. Hore drž 2s, dolu tiež vertebra po vertebre — nie šup. Cítiš symetriu medzi L a P zadkom?',
        feel:'Bridge je prvý pohyb kde aktívne zapájaš gluteus. Sleduj asymetriu — ľavý gluteus môže byť slabší alebo menej koordinovaný po operácii.'},
       {n:3,name:'Dead bug — nohy + ruky (plná verzia)',meta:'3 × 5 každá strana',
        desc:'Ak pondelkový dead bug išiel dobre (driek neodchádzal): pridaj ruku. Pri spúšťaní pravej nohy, súčasne spúšťaš ľavú ruku nad hlavu. Kontralaterálny vzor. Driek stále pri podložke. Pomalý výdych celý čas pohybu.',
        feel:'Toto je základ pohybového vzoru — kontralaterálna koordinácia. Práve tento vzor sa stráca pri asymetriách panvy.'},
       {n:4,name:'90-90 + Half-kneeling sekvencia',meta:'8 min plynulo',
-       desc:'Zopakuj stretching sekvenciu z týždňa 1. Mal by si ísť hlbšie a s väčším uvoľnením.',
+       desc:'90-90 stretch (45s L, 30s P): sadni na podložku, predná noha v 90° pred sebou, zadná noha v 90° do strany. Mierne predkloň nad prednú nohu — ťah v zadku prednej nohy. Potom Half-kneeling L (45s): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred.',
        feel:'Koniec týždňa 2 = ready na fázu 2. Ak stále cítiš silný nekomfort v operovanej oblasti — predĺž fázu 1 o týždeň.'},
     ]}
   ]},
@@ -379,7 +406,7 @@ const PLAN = [
   {phase:1,week:2,dow:5,label:'Piatok',title:'Hodnotenie — prechod na Fázu 2',duration:'~20 min',phaseLabel:'Fáza 1 — Uvoľnenie',color:'ph1',
    sections:[
     {title:'Warm-up + Testy',exs:[
-      {n:1,name:'Štandardný warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1 min → Thoracic rotation 2×8.',feel:''},
+      {n:1,name:'Warm-up',meta:'6 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, ruky na bruchu. Nádych nosom 4s — brucho ide hore. Výdych ústami 6s — brucho klesá, na konci jemne stiahni spodné brucho. Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba.',feel:''},
       {n:2,name:'Ľahká F1 sekvencia',meta:'10 min',desc:'Skrátená verzia: half-kneeling → sleeper stretch → thoracic rotation. Bez foam rollera.',feel:'Aktívny odpočinok pred testmi.'},
       {n:3,name:'Sebahodnotenie — 4 testy',meta:'10 min',
        desc:'1. Vystri pravú ruku pred seba — vieš ju teraz pritiahnutiť k hrudi lepšie ako pred 2 týždňami?\n2. Half-kneeling ľavá — ide rozsah hlbšie bez bolesti slabín?\n3. Bridge — cítiš symetrickú prácu oboch zadkov?\n4. Dead bug — driek drží pri podložke?',
@@ -391,7 +418,7 @@ const PLAN = [
   {phase:2,week:3,dow:1,label:'Pondelok',title:'Gluteus L + Core aktivácia',duration:'~30 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
     {title:'Warm-up (F1 sekvencia — povinná)',exs:[
-      {n:1,name:'F1 warm-up',meta:'8 min · každý tréning F2 takto začína',desc:'Bránicové dýchanie 3 min → Half-kneeling L 1.5 min → Thoracic rotation 2×8 → Sleeper stretch 1×45s.',feel:'Nervový systém musí "rozbehnúť" správne vzory pred záťažou. Nikdy nevynechaj.'},
+      {n:1,name:'F1 warm-up',meta:'8 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke.',feel:''},
     ]},
     {title:'Hlavná časť — aktivácia',exs:[
       {n:2,name:'Clamshell s gumou — ľavá strana',meta:'3 × 15 ľavá, 3 × 10 pravá · ľahká guma',
@@ -409,7 +436,7 @@ const PLAN = [
   {phase:2,week:3,dow:2,label:'Utorok',title:'Lopatka + Rameno aktivácia',duration:'~30 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
     {title:'Warm-up',exs:[
-      {n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Štandardný F1 warm-up. Pred lopatkovými pohybmi vždy Sleeper stretch — zadná kapsula musí byť uvoľnená pred aktiváciou.',feel:'Poradie je dôležité. Uvoľni → potom aktivuj. Nie naopak.'},
+      {n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke. Sleeper stretch (3×45s): ľahni na pravý bok, pravá ruka pred tebou v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:'Uvoľni → potom aktivuj. Nie naopak.'},
     ]},
     {title:'Lopatková stabilita + Rameno',exs:[
       {n:2,name:'Band pull-apart',meta:'3 × 15 · ľahká guma',
@@ -445,7 +472,7 @@ const PLAN = [
   {phase:2,week:3,dow:4,label:'Štvrtok',title:'Gluteus + Rameno — kombinácia',duration:'~30 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
     {title:'Warm-up',exs:[
-      {n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný warm-up.',feel:''},
+      {n:1,name:'F1 warm-up',meta:'8 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke.',feel:''},
     ]},
     {title:'Syntézový deň',exs:[
       {n:2,name:'Clamshell L · Single-leg bridge L · Band pull-apart · Face pull',meta:'Kombinácia Po+Ut · 25 min',
@@ -465,7 +492,7 @@ const PLAN = [
   // FÁZA 2 — Týždeň 4
   {phase:2,week:4,dow:1,label:'Pondelok',title:'Progres intenzity — gluteus',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný F1 warm-up.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke.',feel:''}]},
     {title:'Progresívna záťaž',exs:[
       {n:2,name:'Clamshell — stredná guma',meta:'3 × 20 ľavá / 3 × 15 pravá',desc:'Stredná guma ak ľahká bola zvládnuteľná v T3. Rovnaký pohyb, vyšší odpor. Sleduj či sa forma nezhoršuje na konci setu.',feel:'Progres = väčší odpor pri rovnakej forme. Nie viac opakovaní pri zlej forme.'},
       {n:3,name:'Lateral band walk',meta:'3 × 12 krokov každá strana · guma nad kolenami',desc:'Guma nad kolenami. Mierne drep (1/4 drepu). Kroky do strany — nohy stále na šírku ramien minimálne (guma napnutá). 12 krokov doprava, 12 doľava = 1 set. Trup rovno, kolená nad prstami.',feel:'Gluteus medius v pohybe — funkčnejší ako clamshell. Telo sa učí používať ľavý gluteus pri pohybe v priestore.'},
@@ -476,19 +503,19 @@ const PLAN = [
 
   {phase:2,week:4,dow:2,label:'Utorok',title:'Rameno progres',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Štandardný F1 warm-up + sleeper stretch pred lopatkovými pohybmi.',feel:'Sleeper stretch každý deň kým nemáš plnú rotáciu.'}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke. Sleeper stretch (3×45s): ľahni na pravý bok, pravá ruka pred tebou v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''}]},
     {title:'Rameno — progres',exs:[
       {n:2,name:'External rotation s gumou',meta:'3 × 15 pravá, 3 × 12 ľavá · ľahká guma',desc:'Guma zachytená do boku. Stoj bokom, lakeť pri tele v 90°. Vonkajšia rotácia — ruka od tela. Lakeť zostáva pri tele. Späť pomaly. Pravá strana priorita.',feel:'Vonkajšia rotácia je presne to, čo ti chýba. Cítiš prácu v zadnom ramene (nie v bicepse/predlaktí).'},
       {n:3,name:'Face pull s predĺženou rotáciou',meta:'3 × 12',desc:'Face pull ako v T3, ale v krajnej pozícii pridaj 2s aktívneho tlaku rúk dozadu (ešte viac vonkajšej rotácie). Lopatky dole a k sebe.',feel:'Kombinácia vonkajšej rotácie + retrakcie lopatky + depresia = presne opačný pohyb ako tvoj problém.'},
-      {n:4,name:'Prone Y-T-W s ľahkým závaží (0.5–1kg)',meta:'2 × 10 každý tvar',desc:'Ako v T3 ale s malým závaží (fľaša vody, konzerva). Ak forma klesá, choď späť bez závaží.',feel:'Dolné trapézy a lopatky musia pracovať proti odporu.'},
+      {n:4,name:'Prone Y-T-W s ľahkým závaží (0.5–1kg)',meta:'2 × 10 každý tvar',desc:'Ľahni na brucho. Y: zdvihni ruky do Y (nad hlavu) s malým závaží (fľaša vody 0.5l) — lopatky stiahnuté, výdrž 2s. T: zdvihni do T (do strán). W: lakte v 90°, zdvíhaj lakte hore (ruky dolu), výdrž 2s. Ak forma klesá alebo cítiš krk — choď späť bez závaží.',feel:'Dolné trapézy a lopatky musia pracovať proti odporu.'},
     ]}
   ]},
 
   {phase:2,week:4,dow:3,label:'Streda',title:'Integrácia celého reťazca',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke.',feel:''}]},
     {title:'Integrácia',exs:[
-      {n:2,name:'Pallof press s pohybom',meta:'3 × 8 každá strana',desc:'Ako v T3, ale v vystretej pozícii pridaj pomalé zdvíhanie rúk hore (do Y) a dole. Trup stále nesmie rotovať.',feel:'Kombinuje anti-rotáciu s pohybom ramena. Toto je blízko reálnemu pohybu.'},
+      {n:2,name:'Pallof press s pohybom',meta:'3 × 8 každá strana',desc:'Guma zachytená do boku vo výške pupka (za dvere). Stoj bokom ku gume, ruky pri hrudi. Pomaly vystri ruky pred seba — trup sa neotáča. Drž 2s. Potom v tejto vystretej pozícii pomaly zdvihni ruky do Y nad hlavu a späť dolu. Trup stále nesmie rotovať. Späť ruky k hrudi.',feel:'Kombinuje anti-rotáciu s pohybom ramena. Toto je blízko reálnemu pohybu.'},
       {n:3,name:'Step-up + band pull-apart superset',meta:'3 × (8 ľavá + 15 pull-apart)',desc:'Step-up ľavou 8 opakovaní → bez pauzy: band pull-apart 15 opakovaní → 45s pauza. Potom pravá noha 8 + pull-apart 15.',feel:'Telo sa učí byť stabilné naraz hore aj dole. Príprava na kalisteniku.'},
       {n:4,name:'Bird-dog s predĺženou výdržou',meta:'3 × 8 každá strana · výdrž 5s',desc:'Bird-dog z T3 s predĺženou výdržou 5s. Môžeš pridať malé závaží na nohu (0.5kg). Ak sa nakláňaš — späť k verzii bez závaží.',feel:'5s výdrž = izometrická práca kontralaterálneho reťazca. To je presne čo chrbtica potrebuje.'},
     ]}
@@ -496,7 +523,7 @@ const PLAN = [
 
   {phase:2,week:4,dow:4,label:'Štvrtok',title:'Circuit — plná kombinácia',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke.',feel:''}]},
     {title:'Circuit tréning — 3 kruhy',exs:[
       {n:2,name:'Circuit: Lateral walk + Face pull + Bird-dog + Dead bug',meta:'3 kruhy · 30–45s pauza medzi kruhmi',desc:'Lateral band walk 12+12 → Face pull 12 → Bird-dog 8+8 → Dead bug 8+8. Minimálna pauza (30s) medzi kruhmi. 3 kruhy. Toto je prvý circuit tréning.',feel:'Circuit je efektívny a mentálne zaujímavý. Ak si unavený — predĺž pauzy. Forma vždy nad tempom.'},
     ]}
@@ -513,21 +540,21 @@ const PLAN = [
   // FÁZA 2 — Týždeň 5
   {phase:2,week:5,dow:1,label:'Pondelok',title:'Konsolidácia F2 — progres',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke.',feel:''}]},
     {title:'T4 s progresom',exs:[
-      {n:2,name:'Clamshell L — 3×25 alebo silnejšia guma',meta:'Progres od T4',desc:'Zopakuj T4. Kde môžeš progresovať: Clamshell L → 3×25 alebo silnejšia guma; External rotation → stredná guma; Bird-dog → výdrž 8s; Face pull → stredná guma.',feel:'Cieľ nie je pridávať nové pohyby — cieľ je robiť existujúce pohyby s väčšou istotou, lepšou formou a menšou námahou.'},
+      {n:2,name:'Clamshell L — 3×25 alebo silnejšia guma',meta:'Progres od T4',desc:'Clamshell L (3×25 alebo silnejšia guma): ľahni na ľavý bok, guma nad kolenami, dvíhaj horné koleno hore ako mušľa — päty spolu, panva rovno. Výdrž 1s navrchu. Potom External rotation P (3×15, stredná guma): lakeť pri tele v 90°, vonkajšia rotácia ruky od tela, späť pomaly. Potom Bird-dog (3×8, výdrž 8s): štvornožka, vystri ľavú nohu dozadu a pravú ruku dopredu súčasne, panva rovná, výdrž 8s. Potom Face pull (3×12, stredná guma): ťahaj k tvári, lakte do strán a za hlavu, lopatky dole a k sebe v krajnej pozícii.',feel:'Cieľ nie je pridávať nové pohyby — cieľ je robiť existujúce pohyby s väčšou istotou, lepšou formou a menšou námahou.'},
     ]}
   ]},
   {phase:2,week:5,dow:2,label:'Utorok',title:'Rameno + Lopatka konsolidácia',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up + Sleeper stretch',meta:'8 min + 3×45s',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke. Sleeper stretch (3×45s): ľahni na pravý bok, pravá ruka pred tebou v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''}]},
     {title:'T4 Ut — s progresom',exs:[
-      {n:2,name:'External rotation stredná guma + Face pull progres',meta:'Rovnaké sety ako T4',desc:'External rotation 3×15 P + 3×12 L so strednou gumou. Face pull s predĺženou rotáciou 3×12. Prone Y-T-W s závaží 3×10.',feel:'Ak forma strednej gumy nie je dobrá — zostaň na ľahkej.'},
+      {n:2,name:'External rotation stredná guma + Face pull progres',meta:'Rovnaké sety ako T4',desc:'External rotation (3×15 P, 3×12 L, stredná guma): stoj bokom ku gume, lakeť pri tele v 90°, rotuj ruku od tela — späť pomaly. Potom Face pull s predĺženou rotáciou (3×12): ťahaj k tvári, v krajnej pozícii pridaj 2s aktívneho tlaku rúk ešte viac dozadu, lopatky dole a k sebe. Potom Prone Y-T-W so závaží (3×10 každý tvar): ľahni na brucho, Y — ruky nad hlavu (závaží), T — do strán, W — lakte 90° zdvíhaj hore.',feel:'Ak forma strednej gumy nie je dobrá — zostaň na ľahkej.'},
     ]}
   ]},
   {phase:2,week:5,dow:3,label:'Streda',title:'Integrácia + Circuit progres',duration:'~35 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'8 min',desc:'Bránicové dýchanie 3 min: ľahni na chrbát, kolená pokrčené, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1.5 min): kľakni na ľavé koleno, podsaď panvu, predkloni sa váhou vpred. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, dolná ruka drží koleno, horná opisuje oblúk k stropu. Záver: Sleeper stretch P (45s) — ľahni na pravý bok, ľavá ruka jemne tlačí pravé zápästie smerom k podložke.',feel:''}]},
     {title:'T4 St+Št — kombinácia',exs:[
       {n:2,name:'Circuit: Lateral walk + Face pull + Bird-dog (8s výdrž) + Dead bug s gumou',meta:'3 kruhy · progres od T4',desc:'Rovnaký circuit ako T4 štvrtok, ale bird-dog s výdržou 8s a dead bug s gumou. 3 kruhy.',feel:'Toto je tvoj najsilnejší tréning doteraz. Ak ho dokončíš s dobrou formou — si ready na F3.'},
     ]}
@@ -542,7 +569,7 @@ const PLAN = [
   {phase:2,week:5,dow:5,label:'Piatok',title:'Záverečné testy — ready na F3?',duration:'~25 min',phaseLabel:'Fáza 2 — Aktivácia',color:'ph2',
    sections:[
     {title:'Testy + rozhodnutie',exs:[
-      {n:1,name:'F1 warm-up',meta:'6 min',desc:'Štandardný.',feel:''},
+      {n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''},
       {n:2,name:'Záverečné testy F2 — 4 pohyby',meta:'20 min',desc:'1. Pravá ruka — plná vonkajšia rotácia? Pritiahnutie k hrudi plne?\n2. 10 bird-dogov bez nakláňania panvy?\n3. Single-leg bridge ľavá — symetria s pravou?\n4. Step-up ľavou — bez nakláňania trupu?\n\nAk 4/4 → si ready na F3.',feel:'Koniec fázy 2 = prvýkrát od operácie by si mal cítiť, že telo pracuje ako celok. Ľavá strana silnejšia, rameno pohyblivejšie, core funkčný.'},
     ]}
   ]},
@@ -550,7 +577,7 @@ const PLAN = [
   // FÁZA 3 — Týždeň 6
   {phase:3,week:6,dow:1,label:'Pondelok',title:'Push pattern intro',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
    sections:[
-    {title:'Warm-up (skrátený F1)',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min · povinný',desc:'Bránicové dýchanie 2 min → Half-kneeling L 1 min → Thoracic rotation 2 min → Sleeper stretch 1 min.',feel:'Toto budeš robiť pred každým tréningom navždy. 6 minút = poistka chrbtice.'}]},
+    {title:'Warm-up (skrátený F1)',exs:[{n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:'Toto robíš pred každým tréningom. 6 minút = poistka pre platničky a rameno.'}]},
     {title:'Kalistenické základy',exs:[
       {n:2,name:'Incline push-up (ruky na stoličke)',meta:'3 × 10 · 3s dole, 1s hore',desc:'Ruky na stoličke, telo v priamej línii. Pomaly dole (3s), hore (1s). Lakte mierne k telu (nie do strán 90°). Lopatky aktívne — pri kliku dole lopatky k sebe, hore od seba (protrakcia).',feel:'Incline znižuje záťaž na rameno. Správne lopatky pri kliku sú to čo si trénoval celé mesiace.',warn:'Ak cítiš bolesť (nie len námahu) v pravom ramene — zastav.'},
       {n:3,name:'Clamshell L + Bird-dog — maintenance',meta:'Clamshell 2×15 + Bird-dog 2×8',desc:'Udržiavacia dávka F2 pohybov. Zostávajú každý tréning.',feel:'Nikdy nevynechaj tieto pohyby. Ľavý gluteus potrebuje konštantný stimulus.'},
@@ -575,7 +602,7 @@ const PLAN = [
   ]},
   {phase:3,week:6,dow:4,label:'Štvrtok',title:'Push + Pull — prvý circuit',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''}]},
     {title:'Kalisteniký circuit — 3 kruhy',exs:[
       {n:2,name:'Circuit: Incline push-up + Inverted row + Squat + Dead bug',meta:'3 kruhy · 45s pauza',desc:'Incline push-up 10 → Inverted row 8 → Squat 10 → Dead bug 8+8. 45s pauza medzi kruhmi. 3 kruhy.',feel:'Gratulujeme — toto je bod kde prechádza rehabilitácia do tréningu.'},
     ]}
@@ -591,7 +618,7 @@ const PLAN = [
   // FÁZA 3 — Týždeň 7
   {phase:3,week:7,dow:1,label:'Pondelok',title:'Push progres — bližšie k zemi',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''}]},
     {title:'Push progres',exs:[
       {n:2,name:'Pike push-up alebo knee push-up',meta:'3 × 8–10',desc:'Ak incline šiel dobre: Pike push-up (ruky na podlahe, zadok hore — uhlopriečne telo = ľahší shoulder press variant). Alebo knee push-up → full push-up podľa sily. Lopatky aktívne celý čas.',feel:'Postupujeme smerom k plnému push-upu. Forma nad počtom.'},
       {n:3,name:'Bulgarian split squat — ľavá predná',meta:'3 × 8 každá strana',desc:'Zadná noha na stoličke, predná noha vpred. Klesaj dole — ľavý predný gluteus drží záťaž. Hore pomaly. Trup rovno.',feel:'Priamy dôraz na ľavý gluteus v plnom rozsahu. Najsilnejší unilaterálny pohyb doteraz.',warn:'Ak cítiš nekomfort v ľavej slabine — skráť rozsah alebo sa vráť k step-upu.'},
@@ -600,7 +627,7 @@ const PLAN = [
   ]},
   {phase:3,week:7,dow:2,label:'Utorok',title:'Pull progres — väčší uhol',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''}]},
     {title:'Pull progres',exs:[
       {n:2,name:'Inverted row — telo nižšie (väčší uhol)',meta:'3 × 8 · ťažšia verzia',desc:'Rovnaký pohyb ako T6, ale choď nižšie — päty ďalej od stola, telo viac horizontálne = ťažší odpor. Ak máš hrazdu: band-assisted zhyb — guma pod kolená, len práca lopatiek + trochu ťahu.',feel:'Každý centimeter nižšie = väčší odpor. Sleduj či lopatky stále pracujú.'},
       {n:3,name:'Face pull stredná guma + ER superset',meta:'3 × (12+12)',desc:'Rovnaký superset ako T6 ale stredná guma na face pull.',feel:'Po 7 týždňoch pravé rameno by malo mať výrazne lepšiu rotáciu.'},
@@ -616,7 +643,7 @@ const PLAN = [
   ]},
   {phase:3,week:7,dow:4,label:'Štvrtok',title:'Full body circuit — progres',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''}]},
     {title:'Circuit progres — 3 kruhy',exs:[
       {n:2,name:'Circuit: Pike/knee push-up + Inverted row (nízko) + Bulgarian split squat + Dead bug s gumou',meta:'3 kruhy · 45s pauza',desc:'Pike alebo knee push-up 8 → Inverted row nízko 8 → Bulgarian split squat L 8 + P 8 → Dead bug s gumou 8+8. 45s pauza.',feel:'Toto je tvoj najsilnejší tréning doteraz. Komplexný, symetrický, funkčný.'},
     ]}
@@ -632,7 +659,7 @@ const PLAN = [
   // FÁZA 3 — Týždeň 8+
   {phase:3,week:8,dow:1,label:'Pondelok',title:'Push deň — dlhodobý protokol',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min · navždy povinný',desc:'Bránicové dýchanie 2 min → Half-kneeling L 1 min → Thoracic rotation 2 min → Sleeper stretch 1 min.',feel:'Toto robíš pred každým tréningom do konca. Poistka pre L4-L5 a L5-S1.'}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:'Toto robíš pred každým tréningom. Poistka pre L4-L5 a L5-S1.'}]},
     {title:'Push progres',exs:[
       {n:2,name:'Full push-up alebo pike push-up',meta:'3 × 8–12 · podľa sily',desc:'Full push-up ak zvládaš. Ak nie — knee push-up s dôrazom na formu. Lopatky aktívne (protrakcia hore, retrakcia dole). Tempo 3-1-1.',feel:'Každý týždeň +1-2 opakovania alebo ťažší variant keď zvládaš 3×12 s dobrou formou.'},
       {n:3,name:'Bulgarian split squat progres',meta:'3 × 10 každá strana',desc:'Keď zvládaš 3×10 s dobrou formou → pridaj závaží (batoh s knihami, fľaše vody v rukách).',feel:'Ľavá strana zostáva priorita. Ak asymetria pretrváva — ľavej strane +1 set navyše.'},
@@ -641,7 +668,7 @@ const PLAN = [
   ]},
   {phase:3,week:8,dow:2,label:'Utorok',title:'Pull deň — dlhodobý protokol',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''}]},
     {title:'Pull progres',exs:[
       {n:2,name:'Inverted row / band-assisted zhyb progres',meta:'3 × 8–10',desc:'Inverted row čo najnižšie. Keď zvládaš horizontálnu pozíciu s dobrou formou → prejdi na band-assisted zhyb na hrazde. Cieľ je plný zhyb.',feel:'Zhyb je vrchol pull progressie. Každý centimeter nižšie / každé oslabenie gumy je progres.'},
       {n:3,name:'Face pull + External rotation — silná guma',meta:'3 × (15+15)',desc:'Silnejšia guma ako v T7. Udržuj formu — lopatky dole a k sebe v krajnej pozícii.',feel:'Pravé rameno by malo mať teraz plnú rotáciu. Ak nie — sleeper stretch každý deň stále.'},
@@ -657,7 +684,7 @@ const PLAN = [
   ]},
   {phase:3,week:8,dow:4,label:'Štvrtok',title:'Full body — dlhodobý protokol',duration:'~40 min',phaseLabel:'Fáza 3 — Integrácia',color:'ph3',
    sections:[
-    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up skrátený',meta:'6 min',desc:'Štandardný.',feel:''}]},
+    {title:'Warm-up',exs:[{n:1,name:'F1 warm-up',meta:'6 min',desc:'Bránicové dýchanie 2 min: ľahni na chrbát, nádych nosom 4s (brucho hore), výdych ústami 6s (brucho dolu). Potom Half-kneeling L (1 min): kľakni na ľavé koleno, podsaď panvu, predkloni váhou vpred — ťah v prednom ľavom bedre. Potom Thoracic rotation (2×8 každá strana): ľahni na bok, kolená v 90°, dolná ruka drží koleno pri podložke, horná ruka opisuje oblúk k stropu a za seba. Záver: Sleeper stretch P (1×45s) — ľahni na pravý bok, pravá ruka v 90°, ľavá ruka jemne tlačí pravé zápästie k podložke — ťah v zadnom pravom ramene.',feel:''}]},
     {title:'Full body circuit — dlhodobý',exs:[
       {n:2,name:'Circuit: Push + Pull + Legs + Core',meta:'3–4 kruhy · 45s pauza',desc:'Push-up variant (čo najťažší s dobrou formou) 8–10 → Inverted row/zhyb variant 8 → Bulgarian split squat 8+8 → Ab wheel / hollow body 20s. 3–4 kruhy.',feel:'Toto je tvoj základný tréning. Každý týždeň hľadáš ťažší variant niektorého pohybu.'},
     ]}
@@ -678,10 +705,7 @@ const TOTAL_DAYS = PLAN.length;
 // ─── STATE ──────────────────────────────────────────────────────────────────
 let startDate = null;
 let currentIdx = 0;
-let sessionStarted = false;
 let completedDays = {};
-let timerInterval = null;
-let timerSeconds = 0;
 
 function loadState(){
   startDate = localStorage.getItem('rehab_start') || null;
@@ -750,26 +774,33 @@ window.onload=function(){
 };
 
 function navigateToToday(){
-  if(!startDate) return;
-  const start=new Date(startDate);
-  const today=new Date();
-  today.setHours(0,0,0,0);
-  start.setHours(0,0,0,0);
-  const diff=Math.floor((today-start)/(1000*60*60*24));
-  const weekNum=Math.floor(diff/7)+1;
-  let dayOfWeek=today.getDay();
-  if(dayOfWeek===0||dayOfWeek===6){dayOfWeek=1;}
-  const clampedWeek=Math.min(Math.max(weekNum,1),8);
-  let idx=PLAN.findIndex(d=>d.week===clampedWeek&&d.dow===dayOfWeek);
-  if(idx<0) idx=PLAN.findIndex(d=>d.week===clampedWeek);
-  if(idx>=0) currentIdx=idx;
+  // Find the next training day after the last completed one
+  let lastDone = -1;
+  for(let i=0;i<TOTAL_DAYS;i++){
+    if(completedDays[i]) lastDone=i;
+  }
+  if(lastDone < TOTAL_DAYS-1){
+    currentIdx = lastDone+1;
+  } else {
+    currentIdx = TOTAL_DAYS-1;
+  }
+}
+
+// ─── PROGRESS BAR ────────────────────────────────────────────────────────────
+function updateProgress(){
+  const done=Object.values(completedDays).filter(Boolean).length;
+  const pct=Math.round((done/TOTAL_DAYS)*100);
+  const fill=document.getElementById('progFill');
+  const left=document.getElementById('progLeft');
+  const right=document.getElementById('progRight');
+  if(fill){fill.style.width=pct+'%';}
+  if(left){left.textContent=`${done} z ${TOTAL_DAYS} dní`;}
+  if(right){right.textContent=`${pct}%`;}
 }
 
 // ─── NAVIGATION ─────────────────────────────────────────────────────────────
 function goDay(dir){
   currentIdx=Math.max(0,Math.min(TOTAL_DAYS-1,currentIdx+dir));
-  sessionStarted=false;
-  clearTimer();
   saveState();
   renderDay();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -781,7 +812,7 @@ function renderDay(){
   const isDone=completedDays[currentIdx]===true;
 
   // top badge
-  document.getElementById('topBadge').textContent=`F${d.phase} · T${d.week} · ${d.label}`;
+  document.getElementById('topBadge').textContent=`Deň ${currentIdx+1}`;
 
   // nav arrows
   const prev=document.getElementById('btnPrev');
@@ -794,15 +825,12 @@ function renderDay(){
   // header
   const phaseColors={ph1:'#5b8fc4',ph2:'#5db87a',ph3:'#d4a843'};
   document.getElementById('dhPhase').innerHTML=`<span style="color:${phaseColors[d.color]}">${d.phaseLabel}</span>`;
-  document.getElementById('dhTitle').textContent=`${d.label} — ${d.title}`;
-  document.getElementById('dhMeta').innerHTML=`
-    <span>Týždeň ${d.week}</span>
-    <span>${d.duration}</span>
-    <span>Deň ${currentIdx+1} z ${TOTAL_DAYS}</span>
-  `;
+  document.getElementById('dhTitle').textContent=d.title;
+  document.getElementById('dhMeta').innerHTML=`<span>${d.duration}</span><span>Fáza ${d.phase} · Týždeň ${d.week}</span>`;
 
   // status bar
   renderStatusBar(isDone);
+  updateProgress();
 
   // exercises
   const list=document.getElementById('exList');
@@ -822,86 +850,66 @@ function renderDay(){
 
 function renderStatusBar(isDone){
   const sb=document.getElementById('statusBar');
-  const info=document.getElementById('sbInfo');
-  const btn=document.getElementById('btnAction');
-
+  const dayNum=currentIdx+1;
   if(isDone){
-    info.innerHTML='';
-    sb.innerHTML=`<div class="completed-tag">Tréning splnený</div><button class="btn-done" onclick="unmarkDone()" style="background:none;border-color:var(--muted);color:var(--muted);">Zrušiť</button>`;
-  } else if(sessionStarted){
-    sb.innerHTML=`
-      <div>
-        <div class="sb-info"><strong>Tréning prebieha</strong></div>
-        <div class="timer-row"><div class="timer-display" id="timerDisp">0:00</div><div class="timer-label">minút</div></div>
-      </div>
-      <button class="btn-done" id="btnAction" onclick="handleAction()">✓ Hotovo</button>
-    `;
-    startTimer();
+    sb.innerHTML=`<div class="completed-tag">Deň ${dayNum} splnený</div><button class="btn-undo" onclick="unmarkDone()">Zrušiť</button>`;
   } else {
-    sb.innerHTML=`
-      <div class="sb-info" id="sbInfo">Pripravený na tréning</div>
-      <button class="btn-start" id="btnAction" onclick="handleAction()">Štart</button>
-    `;
+    sb.innerHTML=`<div class="sb-info">Deň ${dayNum} z ${TOTAL_DAYS}</div><button class="btn-done" onclick="showConfirm()">✓ Hotovo</button>`;
   }
 }
 
-function handleAction(){
-  const isDone=completedDays[currentIdx]===true;
-  if(isDone) return;
-  if(!sessionStarted){
-    sessionStarted=true;
-    renderStatusBar(false);
-  } else {
-    markDone();
-  }
+function showConfirm(){
+  document.getElementById('confirmBox').classList.add('show');
+}
+function hideConfirm(){
+  document.getElementById('confirmBox').classList.remove('show');
+}
+function confirmDone(){
+  hideConfirm();
+  markDone();
 }
 
 function markDone(){
   completedDays[currentIdx]=true;
-  sessionStarted=false;
-  clearTimer();
   saveState();
   renderStatusBar(true);
-  // confetti-like flash
+  updateProgress();
+  // flash
   document.body.style.transition='background .3s';
   document.body.style.background='#0e1a10';
   setTimeout(()=>{document.body.style.background='var(--bg)';},400);
+  // auto-advance toast after 1.5s
+  if(currentIdx < TOTAL_DAYS-1){
+    setTimeout(()=>showToast(`Pokračuj na Deň ${currentIdx+2} →`, ()=>goDay(1)), 800);
+  }
 }
 
 function unmarkDone(){
   completedDays[currentIdx]=false;
-  sessionStarted=false;
   saveState();
   renderStatusBar(false);
+  updateProgress();
 }
 
-// ─── TIMER ──────────────────────────────────────────────────────────────────
-function startTimer(){
-  timerSeconds=0;
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    timerSeconds++;
-    const disp=document.getElementById('timerDisp');
-    if(disp){
-      const m=Math.floor(timerSeconds/60);
-      const s=String(timerSeconds%60).padStart(2,'0');
-      disp.textContent=`${m}:${s}`;
-    }
-  },1000);
+function showToast(msg, action){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  t.onclick=()=>{t.classList.remove('show'); if(action) action();};
+  setTimeout(()=>t.classList.remove('show'), 4000);
 }
-function clearTimer(){clearInterval(timerInterval);timerInterval=null;timerSeconds=0;}
 
 // ─── EXERCISE CARDS ─────────────────────────────────────────────────────────
 function buildExCard(ex){
   const card=document.createElement('div');
   card.className='ex-card';
-  let bodyHTML=``;
-  if(ex.desc){bodyHTML+=`<div class="ex-sect"><div class="ex-sect-label">Postup</div><div class="ex-sect-text">${ex.desc.replace(/\n/g,'<br>')}</div></div>`;}
-  if(ex.feel){bodyHTML+=`<div class="feel-box">💡 ${ex.feel}</div>`;}
-  if(ex.why){bodyHTML+=`<div class="ex-sect"><div class="ex-sect-label">Prečo to robíš</div><div class="ex-sect-text">${ex.why}</div></div>`;}
-  if(ex.warn){bodyHTML+=`<div class="warn-box">⚠ ${ex.warn}</div>`;}
+  let body='';
+  if(ex.desc){body+=`<div class="ex-sect-text">${ex.desc.replace(/\n/g,'<br>')}</div>`;}
+  if(ex.feel){body+=`<div class="feel-box">💡 ${ex.feel}</div>`;}
+  if(ex.why){body+=`<div class="ex-sect" style="margin-top:10px;"><div class="ex-sect-label">Prečo</div><div class="ex-sect-text">${ex.why}</div></div>`;}
+  if(ex.warn){body+=`<div class="warn-box">⚠ ${ex.warn}</div>`;}
   card.innerHTML=`
-    <div class="ex-head" onclick="toggleCard(this)">
+    <div class="ex-head" onclick="this.parentElement.classList.toggle('open')">
       <div class="ex-n">${ex.n}</div>
       <div class="ex-info">
         <div class="ex-name">${ex.name}</div>
@@ -909,14 +917,9 @@ function buildExCard(ex){
       </div>
       <div class="ex-chev">▶</div>
     </div>
-    <div class="ex-body">${bodyHTML}</div>
+    <div class="ex-body">${body}</div>
   `;
   return card;
-}
-
-function toggleCard(head){
-  const card=head.parentElement;
-  card.classList.toggle('open');
 }
 
 // ─── HISTORY OVERLAY ────────────────────────────────────────────────────────
@@ -950,7 +953,7 @@ function buildOverlay(){
       if(isDone)cls+=' done';
       else if(isCurrent)cls+=' today';
       else if(idx>currentIdx)cls+=' future';
-      html+=`<div class="${cls}" onclick="jumpTo(${idx});hideOverlay()" title="${d.label}">${d.label.substring(0,2)}</div>`;
+      html+=`<div class="${cls}" onclick="jumpTo(${idx});hideOverlay()" title="Deň ${idx+1}: ${d.title}">${idx+1}</div>`;
     });
     html+=`</div></div>`;
     weekDays=[];
@@ -963,11 +966,15 @@ function buildOverlay(){
     weekDays.push({idx,d});
   });
   flushWeek();
-  html+=`<div class="ov-reset"><button class="ov-reset-btn" onclick="resetAll()">Resetovať históriu</button></div>`;
+  html+=`<div class="ov-settings">
+    <div class="ov-settings-label">Nastavenia</div>
+    <button class="ov-settings-btn" onclick="resetStart()">Zmeniť štartovací dátum</button>
+    <button class="ov-settings-btn" onclick="resetAll()" style="color:var(--red);border-color:rgba(194,95,95,.3);">Vymazať celú históriu</button>
+  </div>`;
   document.getElementById('overlayContent').innerHTML=html;
 }
 
-function jumpTo(idx){currentIdx=idx;sessionStarted=false;clearTimer();saveState();renderDay();window.scrollTo({top:0});}
+function jumpTo(idx){currentIdx=idx;saveState();renderDay();window.scrollTo({top:0});}
 
 function calcStreak(){
   let s=0;
@@ -984,6 +991,31 @@ function resetAll(){
   hideOverlay();
   renderDay();
 }
+
+function resetStart(){
+  if(!confirm('Zmeniť štartovací dátum? História zostane zachovaná.'))return;
+  localStorage.removeItem('rehab_start');
+  startDate=null;
+  hideOverlay();
+  document.getElementById('setup').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
 </script>
+
+<!-- CONFIRM DONE -->
+<div id="confirmBox">
+  <div class="confirm-inner">
+    <div class="confirm-title">Tréning hotový?</div>
+    <div class="confirm-sub">Deň sa označí ako splnený.<br>Môžeš ho kedykoľvek zrušiť.</div>
+    <div class="confirm-btns">
+      <button class="confirm-no" onclick="hideConfirm()">Nie</button>
+      <button class="confirm-yes" onclick="confirmDone()">Áno, hotovo</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
 </body>
 </html>
