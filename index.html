@@ -153,6 +153,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
 .ov-settings-btn{width:100%;background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:10px;cursor:pointer;margin-bottom:8px;transition:all .15s;}
 .ov-settings-btn:hover{border-color:var(--border2);color:var(--text);}
 
+
+/* DENNÉ NÁVYKY */
+.daily-wrap{margin:0 20px 16px;}
+.daily-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
+.daily-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.daily-card{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;position:relative;}
+.daily-card.checked{border-color:var(--green);background:rgba(93,184,122,.07);}
+.daily-card-icon{font-size:18px;margin-bottom:6px;}
+.daily-card-name{font-size:12px;color:var(--text);line-height:1.3;margin-bottom:2px;}
+.daily-card-sub{font-size:10px;color:var(--muted);line-height:1.4;}
+.daily-card-check{position:absolute;top:8px;right:10px;font-size:14px;color:var(--green);opacity:0;transition:opacity .2s;}
+.daily-card.checked .daily-card-check{opacity:1;}
+.daily-card-full{grid-column:1/-1;}
+
+/* ZAKÁZANÉ */
+.forbidden-wrap{margin:0 20px 20px;}
+.forbidden-box{background:rgba(194,95,95,.06);border:1px solid rgba(194,95,95,.2);border-radius:10px;padding:14px 16px;}
+.forbidden-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.forbidden-list{font-size:12px;color:#c08080;line-height:1.8;}
+
 /* PHASE DOT */
 .ph1{color:var(--blue);}
 .ph2{color:var(--green);}
@@ -209,6 +229,45 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
     <div class="sb-info" id="sbInfo">Pripravený na tréning</div>
   </div>
 
+
+  <!-- DENNÉ NÁVYKY -->
+  <div class="daily-wrap">
+    <div class="daily-title">Denné návyky</div>
+    <div class="daily-cards" id="dailyCards">
+      <div class="daily-card" id="dc-breathing" onclick="toggleDaily('breathing')">
+        <div class="daily-card-check">✓</div>
+        <div class="daily-card-icon">🫁</div>
+        <div class="daily-card-name">Bránicové dýchanie</div>
+        <div class="daily-card-sub">Každé 2 hod · 5 min</div>
+      </div>
+      <div class="daily-card" id="dc-sm" onclick="toggleDaily('sm')">
+        <div class="daily-card-check">✓</div>
+        <div class="daily-card-icon">🔄</div>
+        <div class="daily-card-name">SM Systém</div>
+        <div class="daily-card-sub">15 min denne</div>
+      </div>
+      <div class="daily-card" id="dc-walk" onclick="toggleDaily('walk')">
+        <div class="daily-card-check">✓</div>
+        <div class="daily-card-icon">🚶</div>
+        <div class="daily-card-name">Lymfatická prechádzka</div>
+        <div class="daily-card-sub">45–60 min · pomalé tempo</div>
+      </div>
+      <div class="daily-card" id="dc-hip" onclick="toggleDaily('hip')">
+        <div class="daily-card-check">✓</div>
+        <div class="daily-card-icon">🦋</div>
+        <div class="daily-card-name">Mobilita bedrových kĺbov</div>
+        <div class="daily-card-sub">10 min · 4 pohyby</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ZAKÁZANÉ POHYBY -->
+  <div class="forbidden-wrap">
+    <div class="forbidden-box">
+      <div class="forbidden-title">⛔ Zakázané</div>
+      <div class="forbidden-list">Beh · Skoky · Mŕtve ťahy · Klasické brušáky</div>
+    </div>
+  </div>
   <div class="ex-list" id="exList"></div>
 
   <div style="display:flex;justify-content:center;align-items:center;gap:16px;padding:0 20px 40px;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(transparent,var(--bg) 40%);pointer-events:none;">
@@ -231,6 +290,65 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
 
 <script>
 // ─── DATA ───────────────────────────────────────────────────────────────────
+
+
+// ─── DENNÉ NÁVYKY DATA ───────────────────────────────────────────────────────
+const DAILY_INFO = {
+  breathing: {
+    icon: '🫁',
+    name: 'Bránicové dýchanie každé 2 hodiny',
+    why: 'Bránica je súčasť hlbokého stabilizačného systému chrbtice. Každé 2 hodiny 5 minút správneho dýchania robí mikrotrakciu platničiek a resetuje nervový systém. Po operácii a sedavej práci je dýchanie plytké — toto je najlacnejšia terapia ktorú máš.',
+    steps: [
+      'Ľahni (alebo sadni rovno) — ruky na bruchu',
+      'Nádych nosom 4s — brucho ide hore, nie hrudník',
+      'Výdych ústami 6s — brucho klesá',
+      'Na konci výdychu jemne stiahni spodné brucho k chrbtici (20% sily)',
+      'Pri nádychu uvoľni — cyklus opakuj 5 minút',
+      'Skús aj 3D verziu: pri nádychu cítiš tlak dopredu, dozadu aj do strán (360°)'
+    ],
+    note: 'Nastav si budík každé 2 hodiny. Aj 3 minúty počas práce za stolom majú efekt.'
+  },
+  sm: {
+    icon: '🔄',
+    name: 'SM Systém — 15 minút denne',
+    why: 'Smíškov SM Systém pracuje so špirálovými svalovými reťazcami a elastickou gumou. Pohyby predlžujú chrbticu počas pohybu — to je aktívna trakcia. Pre platničky L4-L5 a L5-S1 je toto jedna z najefektívnejších metód ktorú si už poznal pred operáciou.',
+    steps: [
+      'Základná poloha: stoj, guma v rukách, lakte mierne pokrčené',
+      'Pohyb 1 — Predpaženie s rotáciou: ťahaj gumy od seba, trup sa jemne rotuje, chrbtica sa predlžuje nahor',
+      'Pohyb 2 — Bočný ťah: guma v jednej ruke, ťahaj do strany s predĺžením chrbtice',
+      'Pohyb 3 — Vzpaženie: oboma rukami hore, chrbtica sa predlžuje, päty pri zemi',
+      'Každý pohyb: 10–15 opakovaní, pomalé, s dýchaním — výdych pri ťahu',
+      'Celková doba: 15 minút denne, ideálne ráno'
+    ],
+    note: 'Ak nemáš SM Systém gumy, použij bežnú odporovú gumu. Základný princíp funguje podobne. Cieľom nie je sila — cieľom je predlžovanie chrbtice počas pohybu.'
+  },
+  walk: {
+    icon: '🚶',
+    name: 'Lymfatická prechádzka — 45–60 minút',
+    why: 'Lymfatický systém nemá vlastné srdce — pohybuje sa svalovou aktivitou. Po operácii a dlhom útlme je lymfatický tok spomalený, čo spomaľuje hojenie tkanív, zvyšuje zápal a únavu. Pomalá chôdza je najúčinnejší spôsob ako ho aktivovať bez záťaže na platničky a slabiny.',
+    steps: [
+      'Tempo: pomalé až stredné — nie turistika, nie šport. Mal by si byť schopný pohodlne hovoriť',
+      'Dĺžka: 45–60 minút. Ak nie je možné, rozdeľ na 2× 25 minút',
+      'Terén: rovný povrch — chodník, park. Nie kopce v prvých 2 týždňoch',
+      'Postoj: hlava rovno, ramená uvoľnené, brušné svaly jemne zapojené',
+      'Dýchanie: bránicové počas celej chôdze — nie povrchné hrudné',
+      'Obuv: s tlmením, nie ploché tenisky'
+    ],
+    note: 'Nie beh, nie nordic walking (palice zaťažujú rameno). Čistá pomalá chôdza. Ideálne na čerstvom vzduchu — kombinácia pohybu + svetla má ďalší efekt na zápal.'
+  },
+  hip: {
+    icon: '🦋',
+    name: 'Mobilita bedrových kĺbov — 10 minút',
+    why: 'Bedrový kĺb je guľový kĺb — mal by sa hýbať do 6 smerov. Po operácii slabiny, dlhom sedení a oslabenom gluteuse sa rozsah pohybu zmenšuje. Keď bedrový kĺb tuhne, kompenzuje chrbtica — to je priama cesta k horšej platničke. Denná mobilita bedrových kĺbov je prevencia aj terapia zároveň.',
+    steps: [
+      '1. Hip circles (kruhy v bedre) — stoj, ruka na stene, jedna noha vo vzduchu robí plné kruhy. 8× každá strana. Ľavá strana bude mať menší rozsah — to je normálne.',
+      '2. Deep squat hold — nohy na šírku ramien, prsty von 30–45°. Klesni do hlbokého drepu, ruky pred sebou alebo drž sa dverí. Výdrž 30–60s. Otvára celý bedrový kĺb naraz.',
+      '3. Frog stretch — na štvornožke, kolená čo najďalej do strán, chodidlá rovnobežne s kolenami. Jemne tlač bedrami dole a dozadu. Výdrž 30s, 2 opakovania. Adresuje vnútornú rotáciu.',
+      '4. Leg swings — stoj, drž sa steny. Noha kýva dopredu-dozadu (10×) a do strán (10×). Dynamická mobilita, nie statický stretch. Obe strany.'
+    ],
+    note: 'Ľavá strana bude výrazne obmedzenejšia — jazva a adhézie po operácii. Neprinucuj rozsah — ide sa na hranicu pohodlného ťahu, nie bolesti. Za 2–3 týždne by si mal vidieť výrazný rozdiel.'
+  }
+};
 
 const PLAN = [
   // FÁZA 1 — Týždeň 1
@@ -786,6 +904,96 @@ function navigateToToday(){
   }
 }
 
+
+// ─── DENNÉ NÁVYKY ────────────────────────────────────────────────────────────
+function getDailyKey(){
+  const today=new Date();
+  return `daily_${today.getFullYear()}_${today.getMonth()}_${today.getDate()}`;
+}
+
+function loadDailyState(){
+  const key=getDailyKey();
+  return JSON.parse(localStorage.getItem(key)||'{}');
+}
+
+function saveDailyState(state){
+  const key=getDailyKey();
+  localStorage.setItem(key,JSON.stringify(state));
+}
+
+function renderDailyCards(){
+  const state=loadDailyState();
+  ['breathing','sm','walk','hip'].forEach(id=>{
+    const el=document.getElementById('dc-'+id);
+    if(el) el.classList.toggle('checked', state[id]===true);
+  });
+}
+
+function toggleDaily(id){
+  const state=loadDailyState();
+  if(state[id]){
+    // show detail instead of unchecking on first tap
+    showDailyDetail(id);
+    return;
+  }
+  state[id]=true;
+  saveDailyState(state);
+  renderDailyCards();
+  showDailyDetail(id);
+}
+
+function showDailyDetail(id){
+  const info=DAILY_INFO[id];
+  if(!info) return;
+  const state=loadDailyState();
+  const isDone=state[id]===true;
+  let html=`<div style="margin-bottom:20px;">
+    <div style="font-size:28px;margin-bottom:8px;">${info.icon}</div>
+    <div style="font-family:'Fraunces',serif;font-size:20px;font-weight:200;color:var(--text);margin-bottom:6px;">${info.name}</div>
+    <div style="font-size:11px;color:var(--muted);background:var(--s2);border-radius:8px;padding:12px 14px;line-height:1.7;margin-bottom:16px;">${info.why}</div>
+    <div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Ako na to</div>`;
+  info.steps.forEach((s,i)=>{
+    html+=`<div style="display:flex;gap:10px;margin-bottom:10px;">
+      <div style="min-width:20px;height:20px;border-radius:50%;background:var(--s3);color:var(--muted);font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">${i+1}</div>
+      <div style="font-size:12px;color:var(--text);line-height:1.65;">${s}</div>
+    </div>`;
+  });
+  if(info.note){
+    html+=`<div style="margin-top:14px;background:var(--s2);border-left:2px solid var(--yellow);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12px;color:var(--text);line-height:1.6;">💡 ${info.note}</div>`;
+  }
+  // toggle done button
+  if(isDone){
+    html+=`<button onclick="undoDaily('${id}')" style="margin-top:16px;width:100%;background:none;border:1px solid var(--muted2);border-radius:8px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;padding:12px;cursor:pointer;">Zrušiť splnenie</button>`;
+  } else {
+    html+=`<button onclick="markDailyDone('${id}')" style="margin-top:16px;width:100%;background:var(--green);border:none;border-radius:8px;color:#0b0c0b;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;padding:14px;cursor:pointer;">✓ Splnené dnes</button>`;
+  }
+  html+=`</div>`;
+  document.getElementById('dailyOverlayContent').innerHTML=html;
+  document.getElementById('dailyOverlay').style.display='flex';
+}
+
+function markDailyDone(id){
+  const state=loadDailyState();
+  state[id]=true;
+  saveDailyState(state);
+  renderDailyCards();
+  document.getElementById('dailyOverlay').style.display='none';
+}
+
+function undoDaily(id){
+  const state=loadDailyState();
+  delete state[id];
+  saveDailyState(state);
+  renderDailyCards();
+  document.getElementById('dailyOverlay').style.display='none';
+}
+
+function closeDailyOverlay(e){
+  if(e.target===document.getElementById('dailyOverlay')){
+    document.getElementById('dailyOverlay').style.display='none';
+  }
+}
+
 // ─── PROGRESS BAR ────────────────────────────────────────────────────────────
 function updateProgress(){
   const done=Object.values(completedDays).filter(Boolean).length;
@@ -831,6 +1039,7 @@ function renderDay(){
   // status bar
   renderStatusBar(isDone);
   updateProgress();
+  renderDailyCards();
 
   // exercises
   const list=document.getElementById('exList');
@@ -1001,6 +1210,15 @@ function resetStart(){
   document.getElementById('app').style.display='none';
 }
 </script>
+
+
+<!-- DETAIL OVERLAY pre denné návyky -->
+<div id="dailyOverlay" onclick="closeDailyOverlay(event)" style="position:fixed;inset:0;background:rgba(11,12,11,.88);backdrop-filter:blur(6px);z-index:55;display:none;align-items:flex-end;justify-content:center;padding:20px;">
+  <div style="background:var(--s1);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:500px;max-height:75vh;overflow-y:auto;padding:24px;" onclick="event.stopPropagation()">
+    <button onclick="document.getElementById('dailyOverlay').style.display='none'" style="float:right;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:12px;padding:4px 10px;cursor:pointer;font-family:'DM Mono',monospace;">zavrieť</button>
+    <div id="dailyOverlayContent"></div>
+  </div>
+</div>
 
 <!-- CONFIRM DONE -->
 <div id="confirmBox">
