@@ -246,7 +246,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
         <div class="daily-card-check">✓</div>
         <div class="daily-card-icon">🫁</div>
         <div class="daily-card-name">Bránicové dýchanie</div>
-        <div class="daily-card-sub">Každé 2 hod · 5 min</div>
+        <div class="daily-card-sub">3 techniky · ráno + cez deň + večer</div>
       </div>
       <div class="daily-card" id="dc-sm" onclick="toggleDaily('sm')">
         <div class="daily-card-check">✓</div>
@@ -304,33 +304,47 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Mon
 const DAILY_INFO = {
   breathing: {
     icon: '🫁',
-    name: 'Bránicové dýchanie každé 2 hodiny',
-    why: 'Bránica je súčasť hlbokého stabilizačného systému chrbtice. Každé 2 hodiny 5 minút správneho dýchania robí mikrotrakciu platničiek a resetuje nervový systém. Po operácii a sedavej práci je dýchanie plytké — toto je najlacnejšia terapia ktorú máš.',
+    name: 'Dýchanie — 3 techniky',
+    why: 'Správne dýchanie je aktívna terapia platničiek, lymfatického systému aj nervového systému. Krokodílie dýchanie ráno a večer aktivuje hlboké stabilizátory chrbtice. Bránicové dýchanie každé 2 hodiny udržuje tlak v brušnej dutine a odľahčuje platničky. Dych 4-7-8 má alkalizačný efekt a upokojuje nervový systém.',
     hasTabs: true,
     tabs: {
-      lahu: {
-        label: 'V ľahu',
-        note: 'Prioritná poloha — rob vždy keď si doma',
+      krokodyl: {
+        label: '🐊 Krokodílie',
+        note: 'Ráno 5 min + Večer 5 min — nahrádza ranné a večerné bránicové dýchanie',
         steps: [
-          'Ľahni si na chrbát, pokrč nohy, chodidlá na zemi — psoas sa uvoľní',
-          'Polož ruky na brucho',
-          'Nádych nosom do dolného brucha — brucho sa dvíha nahor, hrudník nehybný',
-          'Výdych ústami pomaly — brucho klesá',
-          'Tempo: nádych 4 sekundy, výdych 6 sekúnd'
+          'Ľahni si na brucho, čelo polož na dlane (ruky na sebe)',
+          'Päty von — chodidlá rozpadnuté do strán, telo úplne uvoľnené',
+          'Nádych nosom — cítiš ako sa dolná časť chrbta a boky dvíhajú do strán a dozadu',
+          'Hrudník zostáva nehybný — dýchaš do chrbta, nie dopredu',
+          'Výdych ústami pomaly — boky a chrbát klesajú',
+          '5 minút ráno po prebudení (pred vstávaním) + 5 minút večer (pred spaním)'
         ]
       },
-      sede: {
-        label: 'V sede',
-        note: 'Použi keď si v práci a nemôžeš si ľahnúť',
+      branicove: {
+        label: '🫁 Bránicové',
+        note: 'Každé 2 hodiny cez deň — v ľahu doma, v sede v práci',
         steps: [
-          'Seď vzpriamene, chodidlá na zemi',
-          'Ruky na bruchu',
-          'Rovnaká technika — nádych do brucha, nie do hrudníka',
-          'Tempo: nádych 4 sekundy, výdych 6 sekúnd'
+          'V ľahu (priorita): ľahni na chrbát, pokrč nohy, chodidlá na zemi — psoas sa uvoľní. Ruky na bruchu.',
+          'V sede (práca): seď vzpriamene, chodidlá na zemi, ruky na bruchu',
+          'Nádych nosom 4s — brucho ide hore, hrudník nehybný',
+          'Výdych ústami 6s — brucho klesá, na konci jemne stiahni spodné brucho k chrbtici',
+          'Frekvencia: každé 2 hodiny, 5 minút. Nastav si budík.'
+        ]
+      },
+      dych478: {
+        label: '4-7-8',
+        note: 'Alkalizačný efekt — 2× denne alebo pri strese',
+        steps: [
+          'Sadni alebo ľahni — chrbát rovno, telo uvoľnené',
+          'Výdych ústami — vyprázdni pľúca úplne',
+          'Nádych nosom — 4 sekundy',
+          'Zadržanie dychu — 7 sekúnd (ústa zatvorené)',
+          'Výdych ústami so zvukom — 8 sekúnd (úplne vyprázdni)',
+          '4 cykly = 1 séria. Ráno po krokodílom dýchaní alebo večer pred spaním.'
         ]
       }
     },
-    note: 'Frekvencia: každé 2 hodiny, 5 minút. Nastav si budík.'
+    note: 'Poradie dňa: Krokodílie (ráno) → Bránicové každé 2h → 4-7-8 (večer) → Krokodílie (pred spaním).'
   },
   sm: {
     icon: '🔄',
